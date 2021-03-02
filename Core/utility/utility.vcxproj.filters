@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{0c3cb12a-7efa-4d7d-b42b-ebe7216880c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{be1b3185-5c4e-4c03-9293-cd366d4a3d9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\observable">
+      <UniqueIdentifier>{e4d43c60-1bea-4177-be87-ea3160f91b7f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\utils.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\property.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\reflection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\string_conversion.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\observable\observable_property.h">
+      <Filter>include\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="include\type_traits.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\value_getter.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\value_setter.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\functional.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\validator.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
