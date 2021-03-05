@@ -8,9 +8,11 @@ namespace polycumic::utility
 {
     template<getter_object Getter,
         setter_object Setter,
-        validator<value_type<Getter>> Validator = decltype(equality_validator<value_type<Getter>>)>
-    requires std::same_as<value_type<Setter>, value_type<Getter>>
-    struct property_trait : unique_object_trait, std::type_identity<value_type<Getter>>
+        validator<traits::value_type<Getter>> Validator =
+        decltype(equality_validator<traits::value_type<Getter>>)>
+    requires std::same_as<traits::value_type<Setter>, traits::value_type<Getter>>
+    struct property_trait : traits::unique_object_trait,
+        std::type_identity<traits::value_type<Getter>>
     {
         using getter_t = Getter;
         using setter_t = Setter;
@@ -41,7 +43,8 @@ namespace polycumic::utility
                 std::same_as<typename Property::getter_result_t, decltype(t.get())>;
 
                 t.set(std::declval<t>());
-                std::same_as<typename Property::setter_result_t, decltype(t.set(std::declval<t>()))>;
+                std::same_as<typename Property::setter_result_t,
+                    decltype(t.set(std::declval<t>()))>;
             } {}
         };
     }
@@ -49,9 +52,6 @@ namespace polycumic::utility
     template<typename Property>
     concept property_type = requires { details::property_trait<Property>{}; };
 
-    /**
-     * \brief provide functionality like C# property
-     */
     template<typename Getter, typename Setter, typename Validator>
     class property_base : property_trait<Getter, Setter, Validator>
     {
@@ -172,17 +172,6 @@ namespace polycumic::utility
     template<typename Getter, typename Setter, typename Validator>
     property(Validator, Getter, Setter) -> property<Getter, Setter, Validator>;
 
-    namespace details
-    {
-        struct generate_property_obj
-        {
-            template<typename T>
-            constexpr auto operator()(T& v) const
-            {
-                return property(value_getter(v), value_setter(v));
-            }
-        };
-    }
-
-    inline constexpr details::generate_property_obj generate_value_property;
+    inline constexpr auto generate_value_property =
+        [](auto& v) { return property(value_getter(v), value_setter(v)); };
 }

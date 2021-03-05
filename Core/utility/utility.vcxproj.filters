@@ -10,6 +10,9 @@
     <Filter Include="include\observable">
       <UniqueIdentifier>{e4d43c60-1bea-4177-be87-ea3160f91b7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\traits">
+      <UniqueIdentifier>{5a059ff8-b9e3-4aa8-a009-585609228ad3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils.h">
@@ -41,6 +44,18 @@
     </ClInclude>
     <ClInclude Include="include\validator.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\traits\object.h">
+      <Filter>include\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\traits\type_list.h">
+      <Filter>include\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\traits\function.h">
+      <Filter>include\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\traits\integer_seqence.h">
+      <Filter>include\traits</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

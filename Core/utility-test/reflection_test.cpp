@@ -3,8 +3,7 @@
 
 #include "reflection.h"
 
-template<typename>
-void f(int, char) {}
+using namespace polycumic::utility;
 
 struct my_struct
 {
@@ -16,16 +15,21 @@ struct my_struct
 
 BOOST_AUTO_TEST_SUITE(reflection_test)
 
-BOOST_AUTO_TEST_CASE(reflection)
+BOOST_AUTO_TEST_CASE(my_test)
 {
-    utility::reflection::type<my_struct>
-        .MEMBER_FUNC(&my_struct::f<int>)
-        .MEMBER_VAR(&my_struct::v);
+    std::set<std::string_view> names{"int", "void", "char", "my_struct", "v"};
 
-    const auto id = entt::to_hashed(MEMBER_FUNC_NAME(&my_struct::f<int>)).value();
-    const auto type_info = entt::resolve<my_struct>();
-    const auto requested_id = (*type_info.func().begin()).id();
-    BOOST_CHECK_EQUAL(id, requested_id);
+    using meta = reflection::type_meta<my_struct>;
+    meta::MEMBER_DATA(&my_struct::v);
+    meta::MEMBER_FUNC(&my_struct::f<int>);
+
+    for(const auto& str : entt::hash_traits::all_str)
+    {
+        BOOST_TEST_MESSAGE(str);
+        if(names.contains(str)) names.erase(str);
+    }
+
+    BOOST_TEST(names.empty());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

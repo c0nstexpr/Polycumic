@@ -7,11 +7,11 @@
 namespace polycumic::utility::observable
 {
     template<property_type PropertyT>
-    class observable_property : unique_object_trait, std::type_identity<value_type<PropertyT>>
+    class observable_property : traits::unique_object_trait, std::type_identity<traits::value_type<PropertyT>>
     {
     public:
         using property_t = PropertyT;
-        using value_t = value_type<property_t>;
+        using value_t = traits::value_type<property_t>;
         using const_ref_t = add_const_lvalue_ref_t<value_t>;
 
     private:

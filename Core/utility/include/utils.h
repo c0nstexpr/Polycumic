@@ -19,6 +19,8 @@
 #include <rxcpp/rx.hpp>
 #include <tl/expected.hpp>
 
+using namespace std::literals;
+
 namespace polycumic::utility
 {
     using tl::expected;
@@ -75,4 +77,15 @@ namespace polycumic::utility
 #define AUTO_RVALUE_MEMBER(name, ini) decltype(ini)&& name = ini
 
 #define CONST_AUTO_MEMBER(name, ini) const decltype(ini)& name = ini
+
+    namespace details
+    {
+        inline static std::random_device random_device;
+
+        inline static std::mt19937 random_engine{std::random_device{}()};
+    }
+
+    constexpr auto& get_random_device() { return details::random_device; }
+
+    constexpr auto& get_random_engine() { return details::random_engine; }
 }

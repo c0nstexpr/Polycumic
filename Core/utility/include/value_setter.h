@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include  "traits/object.h"
+
 namespace polycumic::utility
 {
     template<std::swappable T>
@@ -22,7 +24,7 @@ namespace polycumic::utility
     };
 
     template<typename Setter>
-    concept setter_object = type_queryable<Setter> && std::invocable<Setter, value_type<Setter>>;
+    concept setter_object = traits::type_queryable<Setter> && std::invocable<Setter, traits::value_type<Setter>>;
 
     template<typename T>
     value_setter(T&) -> value_setter<T>;

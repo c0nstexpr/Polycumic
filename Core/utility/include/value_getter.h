@@ -2,6 +2,7 @@
 
 #pragma once
 #include "type_traits.h"
+#include "traits/object.h"
 
 namespace polycumic::utility
 {
@@ -21,14 +22,14 @@ namespace polycumic::utility
 
         constexpr result_t operator()() const { return v; }
 
-        // ReSharper disable once CppNonExplicitConvertingConstructor
+        // ReSharper disable once CppNonExplicitConversionOperator
         constexpr operator result_t() const { return v; }
     };
 
     template<typename Getter>
-    concept getter_object = type_queryable<Getter> &&
-    inter_convertible<std::invoke_result_t<std::add_const_t<Getter>>, value_type<Getter>> &&
-    inter_convertible<std::add_const_t<Getter>, value_type<Getter>> && 
+    concept getter_object = traits::type_queryable<Getter> &&
+    inter_convertible<std::invoke_result_t<std::add_const_t<Getter>>, traits::value_type<Getter>> &&
+    inter_convertible<std::add_const_t<Getter>, traits::value_type<Getter>> && 
     requires { typename Getter::result_t; };
 
     template<typename T>
