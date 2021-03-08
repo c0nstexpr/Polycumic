@@ -74,9 +74,9 @@ namespace polycumic::utility
 
 #define AUTO_MEMBER(name, ini) decltype(ini) name = ini
 
-#define AUTO_RVALUE_MEMBER(name, ini) decltype(ini)&& name = ini
+#define CONST_AUTO_MEMBER(name, ini) const decltype(ini) name = ini
 
-#define CONST_AUTO_MEMBER(name, ini) const decltype(ini)& name = ini
+#define CONST_AUTO_REF_MEMBER(name, ini) const decltype(ini)& name = ini
 
     namespace details
     {

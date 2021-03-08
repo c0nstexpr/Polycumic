@@ -7,34 +7,43 @@
 namespace polycumic::utility
 {
     template<typename T, bool ReturnByValue = std::is_scalar_v<T>>
-    struct value_getter : std::type_identity<T>
+    struct value_getter : std::type_identity<T>, traits::unique_object_trait
     {
         using base = std::type_identity<T>;
         using base::base;
         using base::type;
         using const_reference_t = add_const_lvalue_ref_t<type>;
-        using result_t = std::conditional_t<ReturnByValue, typename base::type, const_reference_t>;
+        using getter_result_t = std::conditional_t<ReturnByValue, typename base::type, const_reference_t>;
+
+    private:
+        static constexpr auto is_nothrow_gettable_v_ = !ReturnByValue ||
+            std::is_nothrow_copy_constructible_v<T>;
+
+    public:
 
         const_reference_t v;
 
         // ReSharper disable once CppNonExplicitConvertingConstructor
         constexpr value_getter(const_reference_t value) noexcept : v(value) {}
 
-        constexpr result_t operator()() const { return v; }
+        [[nodiscard]] constexpr getter_result_t operator()() const noexcept(is_nothrow_gettable_v_)
+        {
+            return v;
+        }
 
         // ReSharper disable once CppNonExplicitConversionOperator
-        constexpr operator result_t() const { return v; }
+        [[nodiscard]] constexpr operator getter_result_t() const noexcept(is_nothrow_gettable_v_)
+        {
+            return v;
+        }
     };
-
-    template<typename Getter>
-    concept getter_object = traits::type_queryable<Getter> &&
-    inter_convertible<std::invoke_result_t<std::add_const_t<Getter>>, traits::value_type<Getter>> &&
-    inter_convertible<std::add_const_t<Getter>, traits::value_type<Getter>> && 
-    requires { typename Getter::result_t; };
 
     template<typename T>
     value_getter(const T&) -> value_getter<T>;
 
-    template<typename T>
-    using getter_result_t = typename T::result_t;
+    template<typename Getter, typename T>
+    concept getter_object = std::is_invocable_r_v<T, Getter>;
+
+    template<typename Getter>
+    using getter_value_t = std::remove_cvref_t<std::invoke_result_t<Getter>>;
 }

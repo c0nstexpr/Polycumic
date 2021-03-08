@@ -6,12 +6,10 @@
 
 namespace polycumic::utility
 {
-    template<std::swappable T>
-    struct value_setter : std::type_identity<T>
+    template<typename T>
+    struct value_setter : std::type_identity<T>, traits::unique_object_trait
     {
-        using base = std::type_identity<T>;
-        using base::base;
-        using base::type;
+        using std::type_identity<T>::type;
         using reference_t = std::add_lvalue_reference_t<type>;
 
         reference_t v;
@@ -20,11 +18,16 @@ namespace polycumic::utility
         constexpr value_setter(reference_t value) noexcept : v(value) {}
 
         template<typename... Args> requires std::constructible_from<T, Args...>
-        constexpr void operator()(Args&&... args) { v = base::type(std::forward<Args>(args)...); }
+        constexpr void operator()(
+            Args&&... args
+        ) noexcept(std::is_nothrow_constructible_v<type, Args...>)
+        {
+            v = type(std::forward<Args>(args)...);
+        }
     };
 
-    template<typename Setter>
-    concept setter_object = traits::type_queryable<Setter> && std::invocable<Setter, traits::value_type<Setter>>;
+    template<typename Setter, typename T>
+    concept setter_object = std::invocable<Setter, T>;
 
     template<typename T>
     value_setter(T&) -> value_setter<T>;

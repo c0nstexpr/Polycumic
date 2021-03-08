@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include "property.h"
-#include "string_conversion.h"
+#include "traits/member.h"
 
 namespace nameof
 {

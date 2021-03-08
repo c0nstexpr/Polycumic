@@ -23,6 +23,12 @@ namespace polycumic::utility::traits
                     {
                         return std::declval<MatchT>();
                     }(std::declval<type_list>()))>;
+
+                template<typename Find>
+                static constexpr auto type_index = []<std::size_t Index>(indexed_type<Index, Find>&)
+                {
+                    return Index;
+                }(std::declval<type_list>());
             };
         };
     }

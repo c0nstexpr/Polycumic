@@ -1,5 +1,5 @@
 ﻿// Created by BlurringShadow at 2021-03-02-下午 2:41
-#include "property.h"
+#include "property/property.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -13,7 +13,7 @@ struct my_struct
 {
     data_type v{};
 
-    AUTO_RVALUE_MEMBER(v_prop, generate_value_property(v));
+    AUTO_MEMBER(v_prop, generate_value_property(v));
 };
 
 BOOST_AUTO_TEST_SUITE(property_test);
@@ -22,22 +22,22 @@ static std::uniform_int_distribution<data_type> distribution{
     std::numeric_limits<data_type>::min()
 };
 
-using validator_t = decltype(equality_validator<int>);
+using validator_t = decltype(equality_validator<data_type>);
 
-static_assert(validator<validator_t, int>);
+static_assert(validator<validator_t, data_type>);
 
-using setter_t = value_setter<int>;
-using getter_t = value_getter<int>;
+using setter_t = value_setter<data_type>;
+using getter_t = value_getter<data_type>;
 
-static_assert(getter_object<getter_t>);
-static_assert(setter_object<setter_t>);
+static_assert(getter_object<getter_t, data_type>);
+static_assert(setter_object<setter_t, data_type>);
 
-using trait = property_trait<getter_t, setter_t>;
-using property_base_t = property_base<getter_t, setter_t, void>;
+using trait = property_trait<data_type, getter_t, setter_t>;
+using property_base_t = property_base<data_type, getter_t, setter_t, void>;
 
 static_assert(std::derived_from<property_base_t, trait>);
 
-using property_t = property<getter_t, setter_t, void>;
+using property_t = property<data_type, getter_t, setter_t, void>;
 
 static_assert(std::derived_from<property_t, property_base_t>);
 

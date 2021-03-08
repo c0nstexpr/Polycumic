@@ -13,12 +13,12 @@
     <Filter Include="include\traits">
       <UniqueIdentifier>{5a059ff8-b9e3-4aa8-a009-585609228ad3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\property">
+      <UniqueIdentifier>{70216028-1d2d-4911-8064-f89c41c41479}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\property.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\reflection.h">
@@ -56,6 +56,15 @@
     </ClInclude>
     <ClInclude Include="include\traits\integer_seqence.h">
       <Filter>include\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\traits\member.h">
+      <Filter>include\traits</Filter>
+    </ClInclude>
+    <ClInclude Include="include\property\property.h">
+      <Filter>include\property</Filter>
+    </ClInclude>
+    <ClInclude Include="include\property\property_base.h">
+      <Filter>include\property</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

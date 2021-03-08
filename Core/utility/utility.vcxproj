@@ -13,11 +13,13 @@
   <ItemGroup>
     <ClInclude Include="include\functional.h" />
     <ClInclude Include="include\observable\observable_property.h" />
-    <ClInclude Include="include\property.h" />
+    <ClInclude Include="include\property\property.h" />
+    <ClInclude Include="include\property\property_base.h" />
     <ClInclude Include="include\reflection.h" />
     <ClInclude Include="include\string_conversion.h" />
     <ClInclude Include="include\traits\function.h" />
     <ClInclude Include="include\traits\integer_seqence.h" />
+    <ClInclude Include="include\traits\member.h" />
     <ClInclude Include="include\traits\object.h" />
     <ClInclude Include="include\traits\type_list.h" />
     <ClInclude Include="include\type_traits.h" />

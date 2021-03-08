@@ -10,12 +10,28 @@ namespace polycumic::utility::traits
         template<typename T>
         struct function_traits_helper;
 
+        template<bool IsNoexcept>
+        struct function_qualifiers_traits
+        {
+            static auto constexpr is_noexcept = IsNoexcept;
+        };
+
         template<typename R, typename... Args>
-        struct function_traits_helper<R(*)(Args ...)>
+        struct function_traits_helper_base
         {
             using result_t = R;
             using args_t = traits::type_list<Args...>;
         };
+
+        template<typename R, typename... Args>
+        struct function_traits_helper<R(*)(Args ...)> :
+            function_traits_helper_base<R, Args...>,
+            function_qualifiers_traits<false> {};
+
+        template<typename R, typename... Args>
+        struct function_traits_helper<R(*)(Args ...) noexcept> :
+            function_traits_helper_base<R, Args...>,
+            function_qualifiers_traits<true> {};
     }
 
     template<typename T> requires std::is_function_v<std::remove_pointer_t<std::decay_t<T>>>

@@ -2,38 +2,41 @@
 
 #include "utils.h"
 
-#include "property.h"
+#include "property/property.h"
 
 namespace polycumic::utility::observable
 {
     template<property_type PropertyT>
-    class observable_property : traits::unique_object_trait, std::type_identity<traits::value_type<PropertyT>>
+    class observable_property :
+        public traits::unique_object_trait,
+        public std::type_identity<traits::value_type<PropertyT>>
     {
     public:
         using property_t = PropertyT;
-        using value_t = traits::value_type<property_t>;
-        using const_ref_t = add_const_lvalue_ref_t<value_t>;
+        using typename observable_property::type;
+        using const_ref_t = add_const_lvalue_ref_t<type>;
+        using on_next_t = std::pair<const_ref_t, typename property_t::getter_result_t>;
 
     private:
         property_t& property_;
 
-        rxcpp::subjects::subject<const_ref_t> previous_;
-        rxcpp::subjects::subject<std::pair<const_ref_t, const_ref_t>> next_;
+        rxcpp::subjects::subject<type> previous_;
+        rxcpp::subjects::subject<on_next_t> next_;
 
     public:
         explicit observable_property(property_t& prop) : property_(prop) {}
 
-        [[nodiscard]] constexpr decltype(auto) observe_before_changed() const
+        [[nodiscard]] constexpr auto observe_before_changed() const
         {
             return previous_.get_observable();
         }
 
-        [[nodiscard]] constexpr decltype(auto) observe_after_changed() const
+        [[nodiscard]] constexpr auto observe_after_changed() const
         {
             return next_.get_observable();
         }
 
-        template<typename... Args> requires std::constructible_from<value_t>
+        template<typename... Args> requires std::constructible_from<type>
         constexpr void set(Args&&... args)
         {
             auto&& pre_subscriber = previous_.get_subscriber();
@@ -41,27 +44,24 @@ namespace polycumic::utility::observable
             try
             {
                 auto&& setter_expected = property_.set(std::forward<Args>(args)...);
-                setter_expected.and_then(
-                    [&](const auto& pre)
-                    {
-                        pre_subscriber.on_next(pre);
-                        next_subscriber.on_next(std::pair{pre, property_});
-                        return expected<void, void>();
-                    }
-                );
-                setter_expected.or_else(
-                    [](const validation_result res)
-                    {
-                        if(res != validation_result::equaled)
-                            throw std::invalid_argument{"validation failed"};
-                        return expected<void, void>();
-                    }
-                );
+                if(setter_expected)
+                {
+                    type pre = property_;
+                    pre_subscriber.on_next(std::as_const(pre));
+                    (*setter_expected)();
+                    next_subscriber.on_next(on_next_t{pre, property_});
+                }
+                else
+                {
+                    const validation_result res = setter_expected.error();
+                    if(res != validation_result::equaled) throw validation_error{""};
+                }
             }
             catch(...)
             {
-                pre_subscriber.on_error();
-                next_subscriber.on_error();
+                const auto exception_ptr = std::current_exception();
+                pre_subscriber.on_error(exception_ptr);
+                next_subscriber.on_error(exception_ptr);
             }
         }
 
@@ -72,4 +72,7 @@ namespace polycumic::utility::observable
 
         [[nodiscard]] constexpr decltype(auto) value() { return value(); }
     };
+
+    template<property_type PropertyT>
+    observable_property(PropertyT&) -> observable_property<PropertyT>;
 }
