@@ -1,7 +1,7 @@
 ﻿// Created by BlurringShadow at 2021-03-03-下午 4:33
 
 #pragma once
-#include "type_list.h"
+#include "type_container.h"
 
 namespace polycumic::utility::traits
 {
@@ -20,7 +20,7 @@ namespace polycumic::utility::traits
         struct function_traits_helper_base
         {
             using result_t = R;
-            using args_t = traits::type_list<Args...>;
+            using args_t = type_container<Args...>;
         };
 
         template<typename R, typename... Args>

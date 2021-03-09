@@ -21,7 +21,7 @@
     <ClInclude Include="include\traits\integer_seqence.h" />
     <ClInclude Include="include\traits\member.h" />
     <ClInclude Include="include\traits\object.h" />
-    <ClInclude Include="include\traits\type_list.h" />
+    <ClInclude Include="include\traits\type_container.h" />
     <ClInclude Include="include\type_traits.h" />
     <ClInclude Include="include\utils.h" />
     <ClInclude Include="include\validator.h" />

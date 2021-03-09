@@ -48,7 +48,7 @@
     <ClInclude Include="include\traits\object.h">
       <Filter>include\traits</Filter>
     </ClInclude>
-    <ClInclude Include="include\traits\type_list.h">
+    <ClInclude Include="include\traits\type_container.h">
       <Filter>include\traits</Filter>
     </ClInclude>
     <ClInclude Include="include\traits\function.h">

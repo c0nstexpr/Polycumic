@@ -137,9 +137,11 @@ namespace polycumic::utility::reflection
             static const auto _ = []
             {
                 using func_traits = traits::member_function_pointer_traits<Ptr>;
-                using involved_list_t = typename func_traits::args_t::
-                    template append_t<typename func_traits::result_t>;
-                involved_list_t::template call<apply_meta>();
+                using involved_list_t = 
+                    typename func_traits::args_t
+                    ::template apply_t<traits::type_set>
+                    ::template append_t<typename func_traits::result_t>;
+                involved_list_t::container::template call<apply_meta>();
                 meta_.template func<Ptr>(entt::str_hash_traits<Name>::id);
                 return 0;
             }();
