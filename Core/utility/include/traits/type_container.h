@@ -30,7 +30,7 @@ namespace polycumic::utility::traits
             }
 
             template<typename Find>
-            static constexpr auto index_of = []
+            static constexpr auto find = []
             {
                 constexpr auto query = type_math_result<Find>();
 
@@ -65,7 +65,7 @@ namespace polycumic::utility::traits
 
                 // ReSharper disable once CppRedundantQualifier
                 template<typename Find>
-                static constexpr std::size_t type_index = type_list::template index_of<Find>;
+                static constexpr std::size_t find = type_list::template find<Find>;
 
                 template<typename Find>
                 static constexpr std::size_t count = type_list::template count<Find>;
@@ -165,7 +165,7 @@ namespace polycumic::utility::traits
                 if constexpr(container::size == 0) return {};
                 else
                 {
-                    constexpr std::array indices{container::template type_index<Types>...};
+                    constexpr std::array indices{container::template find<Types>...};
                     std::array<std::size_t, container::size> filtered{};
                     std::size_t valid_size = 1;
                     for(std::size_t j = 1; j < indices.size(); ++j)

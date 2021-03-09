@@ -13,7 +13,8 @@ using my_type_list = traits::type_container<int, char, bool, int, char, long, do
 using my_type_set = my_type_list::apply_t<traits::type_set>;
 
 static_assert(std::same_as<my_type_list::indexed_t<1>, char>);
-static_assert(my_type_list::type_index<int> == 0);
+static_assert(my_type_list::count<char> == 2);
+static_assert(my_type_list::find<int> == 0);
 static_assert(std::same_as<traits::empty_type_list::rest_t, traits::empty_type_list>);
 static_assert(my_type_set::container::size == 5);
 
