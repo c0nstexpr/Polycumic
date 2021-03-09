@@ -32,8 +32,7 @@ namespace nameof
         return n.substr(i);
     }();
 
-    template<const auto Ptr, const auto Name>
-    requires polycumic::utility::str_literal<decltype(Name)>
+    template<auto Ptr, polycumic::utility::str_literal auto Name>
     inline constexpr auto func_name_v = []()
     {
         constexpr auto sig = nameof_full_type_v<decltype(Ptr)>;
@@ -97,7 +96,7 @@ namespace entt
         inline static const auto& all_str = as_const(str_map_) | std::ranges::views::values;
     };
 
-    template<auto Str> requires polycumic::utility::str_literal<decltype(Str)>
+    template<polycumic::utility::str_literal auto Str>
     struct str_hash_traits : hash_traits
     {
         static constexpr auto id = to_hashed({Str.data(), Str.size() - 1});
@@ -128,17 +127,11 @@ namespace polycumic::utility::reflection
         };
 
     public:
-        template<auto Pointer>
-        static constexpr auto is_member_pointer = traits::member_of<decltype(Pointer), T>;
-
-        template<auto Pointer>
-        static constexpr auto is_member_function_pointer = is_member_pointer<Pointer> &&
-            std::is_member_function_pointer_v<decltype(Pointer)>;
-
         static constexpr auto meta() { return meta_; }
 
-        template<auto Ptr, auto Name> requires is_member_function_pointer<Ptr> &&
-        polycumic::utility::str_literal<decltype(Name)>
+        // Avoid MSVC bug
+        template</*traits::member_func_of<T>*/ auto Ptr, str_literal auto Name>
+        requires traits::member_func_of<decltype(Ptr), T>
         static auto func()
         {
             static const auto _ = []
@@ -153,8 +146,8 @@ namespace polycumic::utility::reflection
             return meta();
         }
 
-        template<auto Ptr, auto Name> requires is_member_pointer<Ptr> &&
-        polycumic::utility::str_literal<decltype(Name)>
+        template</*traits::member_of<T>*/ auto Ptr, str_literal auto Name>
+        requires traits::member_of<decltype(Ptr), T>
         static auto data()
         {
             static const auto _ = []
@@ -166,10 +159,12 @@ namespace polycumic::utility::reflection
             return meta();
         }
 
-        template<auto Getter, auto Name, auto Setter = nullptr>
-        requires is_member_function_pointer<Getter> &&
-        polycumic::utility::str_literal<decltype(Name)> &&
-        (Setter == nullptr || is_member_function_pointer<Setter>)
+        template<
+            traits::member_func_of<T> auto Getter,
+            str_literal auto Name,
+            auto Setter = nullptr
+        >
+        requires (Setter == nullptr || traits::member_func_of<Setter, T>)
         static auto data()
         {
             static const auto _ = []

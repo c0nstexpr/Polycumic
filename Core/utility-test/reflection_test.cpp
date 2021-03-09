@@ -3,7 +3,10 @@
 
 #include "reflection.h"
 
+#include "string_conversion.h"
+
 using namespace polycumic::utility;
+using namespace literals;
 
 struct my_struct
 {
@@ -12,6 +15,10 @@ struct my_struct
     template<typename>
     void f(int, char) const {}
 };
+
+template<traits::member_of<my_struct> auto Ptr>
+requires std::is_member_function_pointer_v<decltype(Ptr)>
+void foo() {}
 
 BOOST_AUTO_TEST_SUITE(reflection_test)
 

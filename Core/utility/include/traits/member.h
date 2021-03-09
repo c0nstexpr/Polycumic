@@ -51,30 +51,30 @@ namespace polycumic::utility::traits
         static constexpr member_ref_qualifier ref_type = RefType;
     };
 
-#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS(is_const, is_volatile, ref_type, qualifiers)\
-template<typename R, typename ClassT, typename... Args>                                   \
-struct member_function_traits<R(ClassT::*)(Args ...) qualifiers> :                        \
-    details::member_function_base_traits<R, ClassT, Args...>,                             \
-    member_qualifier_traits<is_const, is_volatile, member_ref_qualifier::ref_type> {};    \
+#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS(is_const, is_volatile, ref_type, qualifiers) \
+template<typename R, typename ClassT, typename... Args>                                    \
+struct member_function_traits<R(ClassT::*)(Args ...) qualifiers> :                         \
+    details::member_function_base_traits<R, ClassT, Args...>,                              \
+    member_qualifier_traits<is_const, is_volatile, member_ref_qualifier::ref_type> {};     \
 
-#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_REF_PACK(is_const, is_volatile, qualifiers) \
-UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS(is_const, is_volatile, none, qualifiers)            \
-UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS(is_const, is_volatile, lvalue, qualifiers &)        \
-UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS(is_const, is_volatile, rvalue, qualifiers &&)       \
+#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_CONST_PACK(is_volatile, ref_type, qualifiers) \
+UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS(true, is_volatile, ref_type, const qualifiers)        \
+UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS(false, is_volatile, ref_type, qualifiers)             \
 
-#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(is_const, qualifiers)         \
- UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_REF_PACK(is_const, true, qualifiers volatile)      \
- UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_REF_PACK(is_const, false, qualifiers)              \
+#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(ref_type, qualifiers)      \
+ UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_CONST_PACK(true, ref_type, volatile qualifiers) \
+ UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_CONST_PACK(false, ref_type, qualifiers)         \
 
-#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_CONST_PACK                                  \
-UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(true, const)                          \
-UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(false,)                               \
+#define UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_REF_PACK          \
+UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(none, )     \
+UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(lvalue, &)  \
+UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(rvalue, &&) \
 
-    UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_CONST_PACK
+    UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_REF_PACK
 
-#undef UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_CONST_PACK
-#undef UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK
 #undef UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_REF_PACK
+#undef UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK
+#undef UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_CONST_PACK
 #undef UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS
 
     template<auto Ptr> requires std::is_member_function_pointer_v<decltype(Ptr)>
@@ -82,4 +82,7 @@ UTILITY_TRAITS_MEMBER_FUNCTION_TRAITS_VOLATILE_PACK(false,)                     
 
     template<typename T, typename ClassT>
     concept member_of = std::same_as<typename member_traits<T>::class_t, ClassT>;
+
+    template<typename T, typename ClassT>
+    concept member_func_of = member_of<T, ClassT> && requires { member_function_traits<T>{}; };
 }
