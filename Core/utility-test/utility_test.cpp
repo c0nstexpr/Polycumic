@@ -17,19 +17,15 @@ static_assert(my_type_list::type_index<int> == 0);
 static_assert(std::same_as<traits::empty_type_list::rest_t, traits::empty_type_list>);
 static_assert(my_type_set::container::size == 5);
 
-template<std::size_t I>
-void print_type()
-{
-    static constexpr std::string_view str =
-        nameof::nameof_full_type_v<typename my_type_set::container::indexed_t<I>>;
-
-    BOOST_TEST_MESSAGE(str);
-}
-
-template<std::size_t... I>
 struct print_helper
 {
-    print_helper() { (print_type<I>(), ...); }
+    template<std::size_t I>
+    static void call()
+    {
+        BOOST_TEST_MESSAGE(
+            nameof::nameof_full_type_v<typename my_type_set::container::indexed_t<I>>
+        );
+    }
 };
 
 BOOST_AUTO_TEST_SUITE(util_test)
@@ -38,7 +34,7 @@ BOOST_AUTO_TEST_CASE(type_list_test)
 {
     constexpr auto size = my_type_set::container::size;
     BOOST_TEST_MESSAGE(fmt::format("size is {}", size));
-    traits::apply_index_sequence_t<print_helper, traits::make_index_sequence_v<size>>{};
+    traits::apply_index_sequence_invoke<print_helper, traits::make_index_sequence_v<size>>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
