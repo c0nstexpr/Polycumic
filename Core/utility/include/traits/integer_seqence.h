@@ -8,29 +8,32 @@ namespace polycumic::utility::traits
 {
     namespace details
     {
-        template<typename T, auto Func>
-        requires std::is_invocable_r_v<T, decltype(Func), T>
-        struct transform
+        template<typename T>
+        struct int_seq_transform
         {
             template<T... Values>
-            using apply_t = std::integer_sequence<T, Func(Values)...>;
-
-            template<T... Values>
-            static constexpr auto apply_v = apply_t<Values...>{};
+            struct apply
+            {
+                template<typename Func> requires std::is_invocable_r_v<T, Func, T>
+                constexpr auto operator()(Func func) const
+                {
+                    return std::integer_sequence<T, func(Values)...>{};
+                }
+            };
         };
 
         // ReSharper disable once CppFunctionIsNotImplemented
         template<typename ValueT, template<ValueT...> typename T, ValueT... I>
-        static constexpr T<I...> apply_index_sequence(std::integer_sequence<ValueT, I...>);
+        static constexpr T<I...> apply_int_seq(std::integer_sequence<ValueT, I...>);
 
         template<typename T, T From>
         static constexpr auto make_sequence_helper = [](const T v) { return v + From; };
 
         template<typename ValueT>
-        struct invoke_helper
+        struct int_seq_invoker
         {
             template<ValueT... I>
-            struct invoker
+            struct apply
             {
                 template<typename T> requires requires
                 {
@@ -48,7 +51,7 @@ namespace polycumic::utility::traits
         typename ValueT,
         template<ValueT...> typename T,
         auto Sequence>
-    using apply_sequence_t = decltype(details::apply_index_sequence<ValueT, T>(Sequence));
+    using apply_sequence_t = decltype(details::apply_int_seq<ValueT, T>(Sequence));
 
     template<
         typename ValueT,
@@ -56,7 +59,7 @@ namespace polycumic::utility::traits
         auto Sequence>
     constexpr void apply_sequence_invoke()
     {
-        apply_sequence_t<ValueT, details::invoke_helper<ValueT>::template invoker, Sequence>
+        apply_sequence_t<ValueT, details::int_seq_invoker<ValueT>::template apply, Sequence>
             ::template invoke<T>();
     }
 
@@ -70,24 +73,26 @@ namespace polycumic::utility::traits
     static constexpr auto apply_index_sequence_v = apply_index_sequence_t<T, Sequence>{};
 
     template<typename T, auto Sequence>
-    constexpr void apply_index_sequence_invoke()
+    constexpr void apply_index_sequence_invoke() { apply_sequence_invoke<size_t, T, Sequence>(); }
+
+    template<typename ValueT, auto Sequence, typename Func>
+    static constexpr auto transform_sequence(Func func)
     {
-        apply_index_sequence_t<details::invoke_helper<std::size_t>::invoker, Sequence>
-            ::template invoke<T>();
+        return apply_sequence_v<
+            ValueT,
+            details::int_seq_transform<ValueT>::template apply,
+            Sequence
+        >(func);
     }
 
-    template<typename ValueT, auto Func, auto Sequence>
-    static constexpr auto transform_sequence_v = apply_sequence_v<
-        ValueT,
-        details::transform<ValueT, Func>::template apply_t,
-        Sequence
-    >;
+    template<typename ValueT, auto Sequence, auto Func>
+    static constexpr auto transform_sequence_v = transform_sequence<ValueT, Sequence>(Func);
 
     template<typename T, T Size, T From = 0>
     static constexpr auto make_integer_sequence_v = transform_sequence_v<
         T,
-        details::make_sequence_helper<T, From>,
-        std::make_integer_sequence<T, Size>{}
+        std::make_integer_sequence<T, Size>{},
+        details::make_sequence_helper<T, From>
     >;
 
     template<std::size_t Size, std::size_t From = 0>
