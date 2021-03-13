@@ -1,13 +1,17 @@
 ﻿#pragma once
 
 #include "property_base.h"
+#include "getter/member_getter.h"
+#include "getter/value_getter.h"
+#include "setter/member_setter.h"
+#include "setter/value_setter.h"
 
 namespace polycumic::utility
 {
     /**
      * \brief provide functionality like C# property
      */
-    template<typename T, typename Getter, typename Setter, typename Validator>
+    template<typename T, typename Getter, typename Setter, typename Validator = void>
     class property : public property_base<T, Getter, Setter, Validator>
     {
     public:
@@ -110,4 +114,16 @@ namespace polycumic::utility
 
     inline constexpr auto generate_value_property =
         [](auto& v) { return make_property(value_getter(v), value_setter(v)); };
+
+    template<auto GetterMem, auto SetterMem>
+    constexpr auto generate_property_from_mem(auto& instance)
+    {
+        using getter_traits = traits::member_function_pointer_traits<GetterMem>;
+        using type = std::remove_cvref_t<typename getter_traits::result_t>;
+
+        return make_property(
+            member_getter<GetterMem>{instance},
+            member_setter<type, SetterMem>(instance)
+        );
+    }
 }

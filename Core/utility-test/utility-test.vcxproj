@@ -19,7 +19,6 @@
     <ClCompile Include="observable_test.cpp" />
     <ClCompile Include="property_test.cpp" />
     <ClCompile Include="reflection_test.cpp" />
-    <ClCompile Include="value_helper_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utility_test.cpp" />

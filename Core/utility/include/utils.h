@@ -2,7 +2,10 @@
 
 #pragma once
 
+#include <algorithm>
+#include <chrono>
 #include <concepts>
+#include <execution>
 #include <ranges>
 #include <string>
 #include <type_traits>
@@ -15,6 +18,7 @@
 #include <frozen/string.h>
 #include <frozen/unordered_map.h>
 #include <frozen/unordered_set.h>
+#include <glm/ext.hpp>
 #include <range/v3/all.hpp>
 #include <rxcpp/rx.hpp>
 #include <tl/expected.hpp>
@@ -88,4 +92,7 @@ namespace polycumic::utility
     constexpr auto& get_random_device() { return details::random_device; }
 
     constexpr auto& get_random_engine() { return details::random_engine; }
+
+    template<typename T> requires std::is_enum_v<T>
+    constexpr auto to_underlying(const T v) { return static_cast<std::underlying_type_t<T>>(v); }
 }

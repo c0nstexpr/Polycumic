@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include "validator.h"
-#include "value_getter.h"
-#include "value_setter.h"
+#include "getter/getter.h"
+#include "setter/setter.h"
+#include "traits/object.h"
+#include "validator/validator.h"
 
 namespace polycumic::utility
 {
@@ -61,7 +62,6 @@ namespace polycumic::utility
         ) noexcept(std::move_constructible<Getter> && std::move_constructible<Setter>) :
             getter_(std::move(getter)),
             setter_(std::move(setter)) {}
-
 
         constexpr validated_t make_validated_setter(
             Setter& setter,
@@ -126,9 +126,9 @@ namespace polycumic::utility
         Validator validator_;
 
     public:
-        constexpr property_base(
-            Getter getter,
-            Setter setter,
+        explicit constexpr property_base(
+            Getter getter = {},
+            Setter setter = {},
             Validator validator = {}
         ) noexcept(std::move_constructible<Getter> && std::move_constructible<Setter>) :
             base(std::move(getter), std::move(setter)),
@@ -146,9 +146,9 @@ namespace polycumic::utility
         using base = property_trait<T, Getter, Setter>;
         using base::base;
 
-        constexpr property_base(
-            Getter getter,
-            Setter setter
+        explicit constexpr property_base(
+            Getter getter = {},
+            Setter setter = {}
         ) noexcept(std::move_constructible<Getter> && std::move_constructible<Setter>) :
             base(std::move(getter), std::move(setter)) {}
 

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "setter.h"
 #include  "traits/object.h"
 
 namespace polycumic::utility
@@ -25,9 +26,6 @@ namespace polycumic::utility
             v = type(std::forward<Args>(args)...);
         }
     };
-
-    template<typename Setter, typename T>
-    concept setter_object = std::invocable<Setter, T>;
 
     template<typename T>
     value_setter(T&) -> value_setter<T>;

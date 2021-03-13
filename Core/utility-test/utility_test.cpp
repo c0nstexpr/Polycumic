@@ -1,6 +1,6 @@
 ﻿// Created by BlurringShadow at 2021-02-28-上午 11:57
 
-#define BOOST_TEST_MODULE test
+#define BOOST_TEST_MODULE utility_test
 #include <boost/test/unit_test.hpp>
 
 #include "reflection.h"
@@ -39,3 +39,5 @@ BOOST_AUTO_TEST_CASE(type_list_test)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+#undef BOOST_TEST_MODULE

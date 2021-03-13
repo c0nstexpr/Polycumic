@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "string_conversion.h"
 #include "traits/member.h"
 
 namespace nameof
@@ -137,7 +138,7 @@ namespace polycumic::utility::reflection
             static const auto _ = []
             {
                 using func_traits = traits::member_function_pointer_traits<Ptr>;
-                using involved_list_t = 
+                using involved_list_t =
                     typename func_traits::args_t
                     ::template apply_t<traits::type_set>
                     ::template append_t<typename func_traits::result_t>;
@@ -192,4 +193,51 @@ namespace polycumic::utility::reflection
 #define MEMBER_FUNC(member_ptr) func<member_ptr, NAMEOF_FUNC(member_ptr)>()
 
 #define MEMBER_DATA(member_ptr) data<member_ptr, NAME_STR_TO_LITERAL(NAMEOF(member_ptr))>()
+}
+
+namespace entt
+{
+    template<typename... T>
+    constexpr void register_to_string_conversion()
+    {
+        [[maybe_unused]] static const auto _ = []
+        {
+            (polycumic::utility::reflection::type_meta<T>::meta()
+                .template conv<polycumic::utility::to_string>(), ...);
+            return 0;
+        };
+    }
+
+    template<typename... T>
+    constexpr void register_from_string_view_conversion()
+    {
+        using namespace polycumic::utility;
+
+        [[maybe_unused]] static const auto _ = []
+        {
+            auto meta_v = reflection::type_meta<std::string_view>::meta();
+            (meta_v.conv<from_string<T>>(), ...);
+            return 0;
+        };
+    }
+
+    template<typename... T>
+    constexpr void register_string_conversion()
+    {
+        register_to_string_conversion<T...>();
+        register_from_string_view_conversion<T...>();
+    }
+
+    namespace details
+    {
+        [[maybe_unused]] inline static const auto _ = []
+        {
+            polycumic::utility::reflection::type_meta<std::string>{};
+            register_string_conversion<
+                char, short, int, long, long long,
+                unsigned char, unsigned short, unsigned, unsigned long, unsigned long long,
+                float, double, long double>();
+            return 0;
+        }();
+    }
 }

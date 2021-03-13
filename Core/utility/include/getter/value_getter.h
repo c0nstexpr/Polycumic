@@ -1,6 +1,8 @@
 ﻿// Created by BlurringShadow at 2021-03-01-下午 9:06
 
 #pragma once
+
+#include "getter.h"
 #include "type_traits.h"
 #include "traits/object.h"
 
@@ -20,7 +22,6 @@ namespace polycumic::utility
             std::is_nothrow_copy_constructible_v<T>;
 
     public:
-
         const_reference_t v;
 
         // ReSharper disable once CppNonExplicitConvertingConstructor
@@ -40,10 +41,4 @@ namespace polycumic::utility
 
     template<typename T>
     value_getter(const T&) -> value_getter<T>;
-
-    template<typename Getter, typename T>
-    concept getter_object = std::is_invocable_r_v<T, Getter>;
-
-    template<typename Getter>
-    using getter_value_t = std::remove_cvref_t<std::invoke_result_t<Getter>>;
 }

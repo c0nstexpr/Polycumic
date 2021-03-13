@@ -24,6 +24,9 @@ namespace polycumic::utility::traits
     template<auto Ptr>
     struct member_pointer_traits : member_traits<std::decay_t<decltype(Ptr)>> {};
 
+    template<auto Ptr>
+    using member_t = typename member_pointer_traits<Ptr>::type;
+
     template<typename>
     struct member_function_traits;
 

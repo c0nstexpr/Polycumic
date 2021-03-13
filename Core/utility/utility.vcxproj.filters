@@ -16,6 +16,15 @@
     <Filter Include="include\property">
       <UniqueIdentifier>{70216028-1d2d-4911-8064-f89c41c41479}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\getter">
+      <UniqueIdentifier>{e1c40acb-1cca-4208-be3b-eb395482b709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\setter">
+      <UniqueIdentifier>{48f54655-a817-4b82-96d2-efcb5fb8939f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\validator">
+      <UniqueIdentifier>{de34b0e6-8ccb-4bf3-8fdd-ea33b37da246}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils.h">
@@ -33,16 +42,7 @@
     <ClInclude Include="include\type_traits.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\value_getter.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\value_setter.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\functional.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\validator.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\traits\object.h">
@@ -65,6 +65,36 @@
     </ClInclude>
     <ClInclude Include="include\property\property_base.h">
       <Filter>include\property</Filter>
+    </ClInclude>
+    <ClInclude Include="include\member_validator.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\getter\member_getter.h">
+      <Filter>include\getter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\getter\value_getter.h">
+      <Filter>include\getter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\setter\member_setter.h">
+      <Filter>include\setter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\setter\value_setter.h">
+      <Filter>include\setter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\validator\member_validator.h">
+      <Filter>include\validator</Filter>
+    </ClInclude>
+    <ClInclude Include="include\validator\validator.h">
+      <Filter>include\validator</Filter>
+    </ClInclude>
+    <ClInclude Include="include\getter\getter.h">
+      <Filter>include\getter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\setter\setter.h">
+      <Filter>include\setter</Filter>
+    </ClInclude>
+    <ClInclude Include="include\concurrent_object.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

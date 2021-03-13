@@ -3,6 +3,7 @@
 #pragma once
 
 #include <charconv>
+
 #include "utils.h"
 
 namespace polycumic::utility
@@ -120,39 +121,4 @@ namespace polycumic::utility
 
     template<typename T>
     inline constexpr from_string_view_func_obj<T> from_string;
-}
-
-namespace entt
-{
-    template<typename... T>
-    constexpr void register_to_string_conversion()
-    {
-        (meta<T>().template conv<polycumic::utility::to_string>(), ...);
-    }
-
-    template<typename... T>
-    constexpr void register_from_string_view_conversion()
-    {
-        auto meta_v = meta<std::string_view>();
-        (meta_v.conv<polycumic::utility::from_string<T>>(), ...);
-    }
-
-    template<typename... T>
-    constexpr void register_string_conversion()
-    {
-        register_to_string_conversion<T...>();
-        register_from_string_view_conversion<T...>();
-    }
-
-    namespace details
-    {
-        [[maybe_unused]] inline static const auto _ = []
-        {
-            register_string_conversion<
-                char, short, int, long, long long,
-                unsigned char, unsigned short, unsigned, unsigned long, unsigned long long,
-                float, double, long double>();
-            return 0;
-        }();
-    }
 }

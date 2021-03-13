@@ -11,11 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\concurrent_object.h" />
     <ClInclude Include="include\functional.h" />
+    <ClInclude Include="include\getter\getter.h" />
+    <ClInclude Include="include\getter\member_getter.h" />
+    <ClInclude Include="include\getter\value_getter.h" />
+    <ClInclude Include="include\member_validator.h" />
     <ClInclude Include="include\observable\observable_property.h" />
     <ClInclude Include="include\property\property.h" />
     <ClInclude Include="include\property\property_base.h" />
     <ClInclude Include="include\reflection.h" />
+    <ClInclude Include="include\setter\member_setter.h" />
+    <ClInclude Include="include\setter\setter.h" />
+    <ClInclude Include="include\setter\value_setter.h" />
     <ClInclude Include="include\string_conversion.h" />
     <ClInclude Include="include\traits\function.h" />
     <ClInclude Include="include\traits\integer_seqence.h" />
@@ -24,9 +32,8 @@
     <ClInclude Include="include\traits\type_container.h" />
     <ClInclude Include="include\type_traits.h" />
     <ClInclude Include="include\utils.h" />
-    <ClInclude Include="include\validator.h" />
-    <ClInclude Include="include\value_getter.h" />
-    <ClInclude Include="include\value_setter.h" />
+    <ClInclude Include="include\validator\member_validator.h" />
+    <ClInclude Include="include\validator\validator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
