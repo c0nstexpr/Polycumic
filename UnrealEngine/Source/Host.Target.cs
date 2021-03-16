@@ -1,21 +1,32 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+#region File Info
+
+// Created by BlurringShadow at 2020-10-16-ÏÂÎç 3:35
+
+#endregion
 
 using UnrealBuildTool;
+
 using System.Collections.Generic;
 
 public abstract class TargetBase : TargetRules
 {
     public const string ProjectModuleName = "Host";
 
-    protected TargetBase(TargetInfo target, UnrealBuildTool.TargetType type, IList<string> extraModuleNames = null) :
+    protected TargetBase(
+        TargetInfo target,
+        UnrealBuildTool.TargetType type,
+        IList<string> extraModuleNames = null
+    ) :
         base(target)
     {
         Type = type;
-        DefaultBuildSettings = BuildSettingsVersion.V2;
-        bLegacyPublicIncludePaths = false;
-        bOverrideBuildEnvironment = true;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        CppStandard = CppStandardVersion.Latest;
+        AdditionalCompilerArguments += " /experimental:external /external:W0";
         // to enable exception
+        bOverrideBuildEnvironment = true;
         bForceEnableExceptions = true;
+
         ExtraModuleNames.Add(ProjectModuleName);
         if (extraModuleNames != null) ExtraModuleNames.AddRange(extraModuleNames);
     }

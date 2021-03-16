@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="transform_system_test.cpp" />
+    <ClCompile Include="game_core_test.cpp" />
+    <ClCompile Include="locator_system_test.cpp" />
+    <ClCompile Include="note_system_test.cpp" />
+  </ItemGroup>
+</Project>
