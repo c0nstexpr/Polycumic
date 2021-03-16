@@ -21,8 +21,8 @@ public abstract class TargetBase : TargetRules
     {
         Type = type;
         DefaultBuildSettings = BuildSettingsVersion.Latest;
-        CppStandard = CppStandardVersion.Latest;
-        AdditionalCompilerArguments += " /experimental:external /external:W0";
+        CppStandard = CppStandardVersion.Cpp17;
+
         // to enable exception
         bOverrideBuildEnvironment = true;
         bForceEnableExceptions = true;
