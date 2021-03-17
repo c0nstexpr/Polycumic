@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #pragma push_macro("ENABLE_GC_OBJECT_CHECKS")
 #undef ENABLE_GC_OBJECT_CHECKS
 

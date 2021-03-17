@@ -1,4 +1,4 @@
-#include "HostGameModeBase.h"
+﻿#include "HostGameModeBase.h"
 #include "third_include_start.h"
 
 #include <boost/date_time.hpp>

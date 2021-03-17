@@ -1,4 +1,4 @@
-#pragma pop_macro("JSON_NOTATIONMAP_DEF")
+﻿#pragma pop_macro("JSON_NOTATIONMAP_DEF")
 
 #pragma pop_macro("UE_NET_TRACE_OFFSET_SCOPE")
 
