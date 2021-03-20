@@ -19,20 +19,6 @@ namespace polycumic::game_core::systems::note
         using coordinate_t = components::note::coordinate;
         using surface_t = components::note::surface;
 
-        static constexpr auto square_center(
-            const coordinate_t horizontal,
-            const coordinate_t vertical
-        )
-        {
-            constexpr auto half_length = square_length / 2;
-
-            return vec_d<3>{
-                (utility::to_underlying(horizontal) - 1) * square_length + half_length,
-                (utility::to_underlying(vertical) - 1) * square_length + half_length,
-                half_length
-            };
-        }
-
         locator_system() = default;
 
         constexpr timestamp_t get_timestamp() const { return timestamp_; }
@@ -83,11 +69,26 @@ namespace polycumic::game_core::systems::note
         template<typename Func>
         void each_transform(Func func) { func(std::move(transforms_changed_)); }
 
-        static constexpr unsigned cube_length = 1050;
+        static constexpr auto cube_length = 300;
 
-        static constexpr unsigned square_count = 3;
+        static constexpr auto square_count = 3;
 
         static constexpr auto square_length = cube_length / square_count;
+
+        static constexpr auto location = []
+        {
+            std::array<std::array<vec_d<3>, 3>, 3> v{};
+
+            for(auto i = 0; i < v.size(); ++i)
+                for(auto j = 0; j < v.size(); ++j)
+                    v[i][j] = {
+                        (i - 1) * square_length,
+                        square_length / 2,
+                        (1 - j) * square_length
+                    };
+
+            return v;
+        }();
 
     private:
         void move(const timestamp_t timestamp, const surface_t current_sur)
@@ -118,14 +119,12 @@ namespace polycumic::game_core::systems::note
 
                         if(utility::is_between(diff, 0, 1))
                         {
-                            transform.value = glm::translate(
-                                {},
-                                glm::mix(
-                                    vec_d<3>{},
-                                    square_center(
-                                        locator.horizontal_coordinate,
-                                        locator.vertical_coordinate
-                                    ),
+                            transform.value = translate(
+                                scale({}, mix({}, glm::one<vec_d<3>>(), diff)),
+                                mix(
+                                    {},
+                                    location[utility::to_underlying(locator.horizontal_coordinate)]
+                                    [utility::to_underlying(locator.vertical_coordinate)],
                                     diff
                                 )
                             );
