@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "Host.h"
 #include <GameFramework/GameModeBase.h>
+#include "Host.h"
+
 #include "HostGameModeBase.generated.h"
 
 UCLASS()

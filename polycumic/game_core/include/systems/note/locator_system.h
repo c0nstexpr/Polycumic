@@ -53,7 +53,7 @@ namespace polycumic::game_core::systems::note
 
         auto get_view() const { return registry.view<const components::note::locator>(); }
 
-        void rearrange() const
+        void rearrange()
         {
             registry.sort<component_t>(
                 [](const auto& l, const auto& r)
@@ -77,7 +77,7 @@ namespace polycumic::game_core::systems::note
 
         static constexpr auto location = []
         {
-            std::array<std::array<vec_d<3>, 3>, 3> v{};
+            std::array<std::array<glm::dvec3, 3>, 3> v{};
 
             for(auto i = 0; i < v.size(); ++i)
                 for(auto j = 0; j < v.size(); ++j)
@@ -90,54 +90,30 @@ namespace polycumic::game_core::systems::note
             return v;
         }();
 
-    private:
-        void move(const timestamp_t timestamp, const surface_t current_sur)
+        const std::array<glm::dmat4, 6> surface_rotation = []
         {
-            using judge_state_t = components::note::judge_state;
-            using transform_component_t = components::transform;
+            std::array<glm::dquat, 6> quaternions{};
+            std::array<glm::dmat4, 6> rotations{};
 
-            auto&& group = registry.group<const component_t>(
-                entt::get<transform_component_t, const judge_state_t>
-            );
-            std::mutex mutex;
+            quaternions[utility::to_underlying(surface_t::back)] =
+                angleAxis(glm::pi<double>(), glm::dvec3{0, 0, 1});
+            quaternions[utility::to_underlying(surface_t::left)] =
+                angleAxis(glm::half_pi<double>(), glm::dvec3{0, 0, 1});
+            quaternions[utility::to_underlying(surface_t::right)] =
+                angleAxis(-glm::half_pi<double>(), glm::dvec3{0, 0, 1});
+            quaternions[utility::to_underlying(surface_t::up)] =
+                angleAxis(-glm::half_pi<double>(), glm::dvec3{1, 0, 0});
+            quaternions[utility::to_underlying(surface_t::down)] =
+                angleAxis(glm::half_pi<double>(), glm::dvec3{1, 0, 0});
 
-            std::for_each(
-                std::execution::par,
-                group.begin(),
-                group.end(),
-                [=, &group, &transforms_changed = transforms_changed_, &mutex](const auto id)
-                {
-                    auto&& [locator, transform, judge_state] = group.get<
-                        const component_t,
-                        transform_component_t,
-                        const judge_state_t>(id);
+            for(std::size_t i = 0; i < rotations.size(); ++i)
+                rotations[i] = static_cast<glm::dmat4>(quaternions[i]);
 
-                    if(!judge_state.state && locator.surface == current_sur)
-                    {
-                        const auto diff = (locator.timestamp - timestamp).count() /
-                            (time_diff_render_guard_.count() / (speed_ * locator.speed));
+            return rotations;
+        }();
 
-                        if(utility::is_between(diff, 0, 1))
-                        {
-                            transform.value = translate(
-                                scale({}, mix({}, glm::one<vec_d<3>>(), diff)),
-                                mix(
-                                    {},
-                                    location[utility::to_underlying(locator.horizontal_coordinate)]
-                                    [utility::to_underlying(locator.vertical_coordinate)],
-                                    diff
-                                )
-                            );
-
-                            {
-                                std::scoped_lock _{mutex};
-                                transforms_changed.emplace(id);
-                            }
-                        }
-                    }
-                }
-            );
-        }
+    private:
+        void move(timestamp_t, surface_t);
 
         surface_t current_render_surface_;
 

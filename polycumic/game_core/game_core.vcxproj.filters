@@ -71,5 +71,8 @@
     <ClCompile Include="src\systems\note\note_system.cpp">
       <Filter>src\systems\note</Filter>
     </ClCompile>
+    <ClCompile Include="src\systems\note\locator_system.cpp">
+      <Filter>src\systems\note</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

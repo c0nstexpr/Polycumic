@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\systems\note\judge_system.cpp" />
+    <ClCompile Include="src\systems\note\locator_system.cpp" />
     <ClCompile Include="src\systems\note\note_system.cpp" />
   </ItemGroup>
   <ItemGroup>

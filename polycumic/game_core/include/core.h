@@ -2,6 +2,7 @@
 
 #pragma once
 
+#define GLM_FORCE_LEFT_HANDED
 #include "utils.h"
 
 namespace polycumic::game_core
