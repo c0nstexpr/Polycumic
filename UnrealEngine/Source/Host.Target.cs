@@ -21,11 +21,13 @@ public abstract class TargetBase : TargetRules
     {
         Type = type;
         DefaultBuildSettings = BuildSettingsVersion.Latest;
-        CppStandard = CppStandardVersion.Cpp17;
+        CppStandard = CppStandardVersion.Latest;
 
         // to enable exception
         bOverrideBuildEnvironment = true;
         bForceEnableExceptions = true;
+
+        AdditionalCompilerArguments += " /wd5054 /wd5055 ";
 
         ExtraModuleNames.Add(ProjectModuleName);
         if (extraModuleNames != null) ExtraModuleNames.AddRange(extraModuleNames);

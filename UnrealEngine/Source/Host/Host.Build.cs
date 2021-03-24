@@ -14,8 +14,12 @@ using UnrealBuildTool;
 
 public class Host : ModuleRules
 {
+    public readonly string ProjectDir;
+
     public Host(ReadOnlyTargetRules target) : base(target)
     {
+        ProjectDir = Path.Combine(ModuleDirectory, "..", "..");
+
         PublicDependencyModuleNames.AddRange(
             new[] { "Core", "CoreUObject", "Engine", "InputCore" }
         );
@@ -49,12 +53,14 @@ public class Host : ModuleRules
 
     void AddProjectRef(string projectName)
     {
-        var projectPath = Path.Combine("$(ProjectDir)", "..", "polycumic");
-        var binaryDirectory = Path.Combine(projectPath, "bin", projectName);
-        PublicSystemIncludePaths.Add(Path.Combine(projectPath, projectName, "include"));
+        var vcProjectPath = Path.Combine(ProjectDir, "..", "polycumic");
+        var binaryDir = Path.Combine(vcProjectPath, "bin","Release-x64", projectName);
+        var headerDir = Path.Combine(vcProjectPath, projectName, "include");
 
-        if (Directory.Exists(binaryDirectory))
-            PublicAdditionalLibraries.AddRange(GetPathsByExtension(binaryDirectory, "lib"));
+        PublicSystemIncludePaths.Add(headerDir);
+
+        if (Directory.Exists(binaryDir))
+            PublicAdditionalLibraries.AddRange(GetPathsByExtension(binaryDir, "lib"));
     }
 
     void SetDependency(UnrealTargetPlatform platform)

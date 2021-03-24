@@ -4,3 +4,4 @@
 
 #include "redef_macros.generated.h"
 THIRD_PARTY_INCLUDES_END
+#pragma warning(pop)
