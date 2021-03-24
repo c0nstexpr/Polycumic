@@ -1,4 +1,4 @@
-﻿#include "core.h"
+﻿#include "game_core.h"
 
 namespace polycumic::game_core
 {

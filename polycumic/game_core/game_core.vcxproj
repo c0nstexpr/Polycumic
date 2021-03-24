@@ -15,7 +15,7 @@
     <ClInclude Include="include\components\note\judge_state.h" />
     <ClInclude Include="include\components\note\locator.h" />
     <ClInclude Include="include\components\transform.h" />
-    <ClInclude Include="include\core.h" />
+    <ClInclude Include="include\game_core.h" />
     <ClInclude Include="include\data_types.h" />
     <ClInclude Include="include\systems\component_observable.h" />
     <ClInclude Include="include\systems\note\judge_system.h" />
@@ -24,7 +24,7 @@
     <ClInclude Include="include\systems\transform_system.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\core.cpp" />
+    <ClCompile Include="src\game_core.cpp" />
     <ClCompile Include="src\systems\note\judge_system.cpp" />
     <ClCompile Include="src\systems\note\locator_system.cpp" />
     <ClCompile Include="src\systems\note\note_system.cpp" />

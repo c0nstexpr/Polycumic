@@ -3,11 +3,11 @@
 #pragma once
 
 #include "concurrent_object.h"
-#include "core.h"
+#include "game_core.h"
 #include "components/transform.h"
 #include "components/note/judge_state.h"
 #include "components/note/locator.h"
-#include "property/property.h"
+#include "traits/member.h"
 
 namespace polycumic::game_core::systems::note
 {
@@ -36,18 +36,6 @@ namespace polycumic::game_core::systems::note
             move(timestamp_, surface);
             current_render_surface_ = surface;
         }
-
-        constexpr auto& speed() { return speed_prop_; }
-
-        constexpr auto& speed() const { return speed_prop_; }
-
-        constexpr auto& timestamp() { return timestamp_prop_; }
-
-        constexpr auto& timestamp() const { return timestamp_prop_; }
-
-        constexpr auto& current_surface() { return current_surface_prop_; }
-
-        constexpr auto& current_surface() const { return current_surface_prop_; }
 
         auto get_view() { return registry.view<components::note::locator>(); }
 
@@ -122,26 +110,6 @@ namespace polycumic::game_core::systems::note
         timestamp_t timestamp_;
 
         static constexpr auto time_diff_render_guard_ = 3s;
-
-        AUTO_MEMBER(speed_prop_, utility::generate_value_property(speed_));
-
-        utility::property<
-            timestamp_t,
-            utility::member_getter<&locator_system::get_timestamp>,
-            utility::member_setter<timestamp_t, &locator_system::set_timestamp>
-        > timestamp_prop_ =
-            utility::generate_property_from_mem<
-                &locator_system::get_timestamp, &locator_system::set_timestamp
-            >(*this);
-
-        utility::property<
-            surface_t,
-            utility::member_getter<&locator_system::get_current_surface>,
-            utility::member_setter<surface_t, &locator_system::set_current_surface>
-        > current_surface_prop_ =
-            utility::generate_property_from_mem<
-                &locator_system::get_current_surface, &locator_system::set_current_surface
-            >(*this);
 
         std::unordered_set<entt::entity> transforms_changed_;
     };

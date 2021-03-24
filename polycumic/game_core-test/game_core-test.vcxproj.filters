@@ -5,5 +5,6 @@
     <ClCompile Include="game_core_test.cpp" />
     <ClCompile Include="locator_system_test.cpp" />
     <ClCompile Include="note_system_test.cpp" />
+    <ClCompile Include="judge_system_test.cpp" />
   </ItemGroup>
 </Project>

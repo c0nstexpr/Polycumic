@@ -53,26 +53,16 @@ namespace polycumic::utility::traits
     template<typename ValueT, typename T, typename Sequence>
     constexpr void apply_sequence_invoke(Sequence)
     {
-#ifdef __cpp_lib_concepts
-        apply_sequence_t<ValueT, details::int_seq_invoker<ValueT>::template apply, seq>
-            ::template invoke<T>();
-#else
         decltype(apply_sequence<ValueT, details::int_seq_invoker<ValueT>::template apply>(
                 Sequence{}
             ))
             ::template invoke<T>();
-#endif
     }
 
     template<typename ValueT, template<ValueT...> typename T>
     static constexpr auto apply_sequence_v = [](auto Sequence)
     {
-        return
-#ifdef __cpp_lib_concepts
-            apply_sequence_t<ValueT, T, Sequence>{};
-#else
-            decltype(apply_sequence<ValueT, T>(Sequence)){};
-#endif
+        return decltype(apply_sequence<ValueT, T>(Sequence)){};
     };
 
 #ifdef __cpp_lib_concepts

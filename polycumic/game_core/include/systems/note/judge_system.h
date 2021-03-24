@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "core.h"
+#include "game_core.h"
 #include "components/note/direction.h"
 #include "components/note/judge_state.h"
 #include "components/note/locator.h"

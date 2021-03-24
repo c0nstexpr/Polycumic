@@ -23,8 +23,9 @@ namespace polycumic::utility
 
 #ifdef __cpp_lib_concepts
         template<std::invocable<const T&> Func>
-#endif
+#else
         template<typename Func>
+#endif
         void read(Func func) const
         {
             std::shared_lock _(mutex_);
@@ -33,8 +34,9 @@ namespace polycumic::utility
 
 #ifdef __cpp_lib_concepts
         template<std::invocable<T&> Func>
-#endif
+#else
         template<typename Func>
+#endif
         void write(Func func)
         {
             std::unique_lock _(mutex_);

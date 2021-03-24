@@ -1,3 +1,8 @@
+#pragma warning(push)
+#pragma warning(disable : 4706)
+#pragma warning(disable : 4800)
+
+
 /* auto-generated on 2021-01-28 09:47:45 -0500. Do not edit! */
 /* begin file include/simdjson.h */
 #ifndef SIMDJSON_H
@@ -40994,3 +40999,5 @@ SIMDJSON_POP_DISABLE_WARNINGS
 
 #endif // SIMDJSON_H
 /* end file include/simdjson.h */
+
+#pragma warning(pop)

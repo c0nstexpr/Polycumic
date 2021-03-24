@@ -3,7 +3,7 @@
 #pragma once
 
 #include "component_observable.h"
-#include "core.h"
+#include "game_core.h"
 #include "components/transform.h"
 
 namespace polycumic::game_core::systems

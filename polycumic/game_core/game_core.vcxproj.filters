@@ -39,7 +39,7 @@
     <ClInclude Include="include\components\note\locator.h">
       <Filter>inlcude\components\note</Filter>
     </ClInclude>
-    <ClInclude Include="include\core.h">
+    <ClInclude Include="include\game_core.h">
       <Filter>inlcude</Filter>
     </ClInclude>
     <ClInclude Include="include\systems\transform_system.h">
@@ -62,7 +62,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\core.cpp">
+    <ClCompile Include="src\game_core.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\systems\note\judge_system.cpp">
