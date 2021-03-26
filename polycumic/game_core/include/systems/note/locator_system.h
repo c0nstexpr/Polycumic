@@ -5,6 +5,7 @@
 #include "concurrent_object.h"
 #include "game_core.h"
 #include "components/transform.h"
+#include "components/note/direction.h"
 #include "components/note/judge_state.h"
 #include "components/note/locator.h"
 #include "traits/member.h"
@@ -18,6 +19,7 @@ namespace polycumic::game_core::systems::note
         using timestamp_t = utility::traits::member_t<&component_t::timestamp>;
         using coordinate_t = components::note::coordinate;
         using surface_t = components::note::surface;
+        using direction_t = components::note::direction;
 
         locator_system() = default;
 
@@ -31,11 +33,7 @@ namespace polycumic::game_core::systems::note
 
         constexpr surface_t get_current_surface() const { return current_render_surface_; }
 
-        void set_current_surface(const surface_t surface)
-        {
-            move(timestamp_, surface);
-            current_render_surface_ = surface;
-        }
+        void rotate(direction_t);
 
         auto get_view() { return registry.view<components::note::locator>(); }
 
@@ -70,40 +68,20 @@ namespace polycumic::game_core::systems::note
             for(auto i = 0; i < v.size(); ++i)
                 for(auto j = 0; j < v.size(); ++j)
                     v[i][j] = {
-                        (i - 1) * square_length,
                         square_length / 2,
+                        (1 - i) * square_length,
                         (1 - j) * square_length
                     };
 
             return v;
         }();
 
-        const std::array<glm::dmat4, 6> surface_rotation = []
-        {
-            std::array<glm::dquat, 6> quaternions{};
-            std::array<glm::dmat4, 6> rotations{};
-
-            quaternions[utility::to_underlying(surface_t::back)] =
-                angleAxis(glm::pi<double>(), glm::dvec3{0, 0, 1});
-            quaternions[utility::to_underlying(surface_t::left)] =
-                angleAxis(glm::half_pi<double>(), glm::dvec3{0, 0, 1});
-            quaternions[utility::to_underlying(surface_t::right)] =
-                angleAxis(-glm::half_pi<double>(), glm::dvec3{0, 0, 1});
-            quaternions[utility::to_underlying(surface_t::up)] =
-                angleAxis(-glm::half_pi<double>(), glm::dvec3{1, 0, 0});
-            quaternions[utility::to_underlying(surface_t::down)] =
-                angleAxis(glm::half_pi<double>(), glm::dvec3{1, 0, 0});
-
-            for(std::size_t i = 0; i < rotations.size(); ++i)
-                rotations[i] = static_cast<glm::dmat4>(quaternions[i]);
-
-            return rotations;
-        }();
-
     private:
         void move(timestamp_t, surface_t);
 
         surface_t current_render_surface_;
+
+        glm::dquat current_qua_;
 
         utility::traits::member_t<&component_t::speed> speed_{};
 

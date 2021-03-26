@@ -4,7 +4,7 @@
 
 namespace polycumic::game_core::components::note
 {
-    enum class direction
+    enum class direction : std::uint8_t
     {
         none,
         left,

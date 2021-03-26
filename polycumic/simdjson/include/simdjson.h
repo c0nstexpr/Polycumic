@@ -5523,7 +5523,7 @@ dom::parser build_parsed_json(const char *buf) noexcept = delete;
 #include <limits>
 #include <stdexcept>
 
-/* begin file include/simdjson/internal/jsonformatutils.h */
+/* begin file include/simdjson/internal/jsonformatutility_core.h */
 #ifndef SIMDJSON_INTERNAL_JSONFORMATUTILS_H
 #define SIMDJSON_INTERNAL_JSONFORMATUTILS_H
 
@@ -5589,7 +5589,7 @@ inline std::ostream& operator<<(std::ostream& out, const escape_json_string &une
 } // namespace simdjson
 
 #endif // SIMDJSON_INTERNAL_JSONFORMATUTILS_H
-/* end file include/simdjson/internal/jsonformatutils.h */
+/* end file include/simdjson/internal/jsonformatutility_core.h */
 
 #ifndef SIMDJSON_DISABLE_DEPRECATED_API
 
@@ -8722,7 +8722,7 @@ simdjson_really_inline std::string_view string_builder<serializer>::str() const 
 // amalgamation working--otherwise, the first time a file is included, it might be put inside the
 // #ifdef SIMDJSON_IMPLEMENTATION_ARM64/FALLBACK/etc., which means the other implementations can't
 // compile unless that implementation is turned on).
-/* begin file include/simdjson/internal/jsoncharutils_tables.h */
+/* begin file include/simdjson/internal/jsoncharutility_core_tables.h */
 #ifndef SIMDJSON_INTERNAL_JSONCHARUTILS_TABLES_H
 #define SIMDJSON_INTERNAL_JSONCHARUTILS_TABLES_H
 
@@ -8748,7 +8748,7 @@ extern SIMDJSON_DLLIMPORTEXPORT const uint32_t digit_to_val32[886];
 } // namespace simdjson
 
 #endif // SIMDJSON_INTERNAL_JSONCHARUTILS_TABLES_H
-/* end file include/simdjson/internal/jsoncharutils_tables.h */
+/* end file include/simdjson/internal/jsoncharutility_core_tables.h */
 /* begin file include/simdjson/internal/numberparsing_tables.h */
 #ifndef SIMDJSON_INTERNAL_NUMBERPARSING_TABLES_H
 #define SIMDJSON_INTERNAL_NUMBERPARSING_TABLES_H
@@ -9587,12 +9587,12 @@ simdjson_really_inline int8x16_t make_int8x16_t(int8_t x1,  int8_t x2,  int8_t x
 
 #endif // SIMDJSON_ARM64_SIMD_H
 /* end file include/simdjson/arm64/simd.h */
-/* begin file include/simdjson/generic/jsoncharutils.h */
+/* begin file include/simdjson/generic/jsoncharutility_core.h */
 
 namespace simdjson {
 namespace arm64 {
 namespace {
-namespace jsoncharutils {
+namespace jsoncharutility_core {
 
 // return non-zero if not a structural or whitespace char
 // zero otherwise
@@ -9698,11 +9698,11 @@ simdjson_really_inline value128 full_multiplication(uint64_t value1, uint64_t va
   return answer;
 }
 
-} // namespace jsoncharutils
+} // namespace jsoncharutility_core
 } // unnamed namespace
 } // namespace arm64
 } // namespace simdjson
-/* end file include/simdjson/generic/jsoncharutils.h */
+/* end file include/simdjson/generic/jsoncharutility_core.h */
 /* begin file include/simdjson/generic/atomparsing.h */
 namespace simdjson {
 namespace arm64 {
@@ -9731,7 +9731,7 @@ simdjson_really_inline uint32_t str4ncmp(const uint8_t *src, const char* atom) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_true_atom(const uint8_t *src) {
-  return (str4ncmp(src, "true") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "true") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -9743,7 +9743,7 @@ simdjson_really_inline bool is_valid_true_atom(const uint8_t *src, size_t len) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_false_atom(const uint8_t *src) {
-  return (str4ncmp(src+1, "alse") | jsoncharutils::is_not_structural_or_whitespace(src[5])) == 0;
+  return (str4ncmp(src+1, "alse") | jsoncharutility_core::is_not_structural_or_whitespace(src[5])) == 0;
 }
 
 simdjson_warn_unused
@@ -9755,7 +9755,7 @@ simdjson_really_inline bool is_valid_false_atom(const uint8_t *src, size_t len) 
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_null_atom(const uint8_t *src) {
-  return (str4ncmp(src, "null") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "null") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -9863,10 +9863,10 @@ static const uint8_t escape_map[256] = {
 simdjson_warn_unused
 simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
                                             uint8_t **dst_ptr) {
-  // jsoncharutils::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
+  // jsoncharutility_core::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
   // conversion isn't valid; we defer the check for this to inside the
   // multilingual plane check
-  uint32_t code_point = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+  uint32_t code_point = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
   *src_ptr += 6;
   // check for low surrogate for characters outside the Basic
   // Multilingual Plane.
@@ -9874,7 +9874,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
     if (((*src_ptr)[0] != '\\') || (*src_ptr)[1] != 'u') {
       return false;
     }
-    uint32_t code_point_2 = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+    uint32_t code_point_2 = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
 
     // if the first code point is invalid we will get here, as we will go past
     // the check for being outside the Basic Multilingual plane. If we don't
@@ -9889,7 +9889,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
         (((code_point - 0xd800) << 10) | (code_point_2 - 0xdc00)) + 0x10000;
     *src_ptr += 6;
   }
-  size_t offset = jsoncharutils::codepoint_to_utf8(code_point, *dst_ptr);
+  size_t offset = jsoncharutility_core::codepoint_to_utf8(code_point, *dst_ptr);
   *dst_ptr += offset;
   return offset > 0;
 }
@@ -10144,7 +10144,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
   // with a returned value of type value128 with a "low component" corresponding to the
   // 64-bit least significant bits of the product and with a "high component" corresponding
   // to the 64-bit most significant bits of the product.
-  simdjson::internal::value128 firstproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
+  simdjson::internal::value128 firstproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
   // Both i and power_of_five_128[index] have their most significant bit set to 1 which
   // implies that the either the most or the second most significant bit of the product
   // is 1. We pack values in this manner for efficiency reasons: it maximizes the use
@@ -10178,7 +10178,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
     // with a returned value of type value128 with a "low component" corresponding to the
     // 64-bit least significant bits of the product and with a "high component" corresponding
     // to the 64-bit most significant bits of the product.
-    simdjson::internal::value128 secondproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
+    simdjson::internal::value128 secondproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
     firstproduct.low += secondproduct.high;
     if(secondproduct.high > firstproduct.low) { firstproduct.high++; }
     // At this point, we might need to add at most one to firstproduct, but this
@@ -10536,7 +10536,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
     SIMDJSON_TRY( parse_exponent(src, p, exponent) );
   }
   if (is_float) {
-    const bool clean_end = jsoncharutils::is_structural_or_whitespace(*p);
+    const bool clean_end = jsoncharutility_core::is_structural_or_whitespace(*p);
     SIMDJSON_TRY( write_float(src, negative, i, start_digits, digit_count, exponent, writer) );
     if (!clean_end) { return INVALID_NUMBER(src); }
     return SUCCESS;
@@ -10552,7 +10552,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
       // Anything negative above INT64_MAX+1 is invalid
       if (i > uint64_t(INT64_MAX)+1) { return INVALID_NUMBER(src);  }
       WRITE_INTEGER(~i+1, src, writer);
-      if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+      if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
       return SUCCESS;
     // Positive overflow check:
     // - A 20 digit number starting with 2-9 is overflow, because 18,446,744,073,709,551,615 is the
@@ -10575,7 +10575,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
   } else {
     WRITE_INTEGER(negative ? (~i+1) : i, src, writer);
   }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
   return SUCCESS;
 }
 
@@ -10596,7 +10596,7 @@ simdjson_unused simdjson_really_inline simdjson_result<uint64_t> parse_unsigned(
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest positive 64-bit number is 20 digits.
   // We do it this way so we don't trigger this branch unless we must.
@@ -10639,7 +10639,7 @@ simdjson_unused simdjson_really_inline simdjson_result<int64_t> parse_integer(co
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest negative 64-bit number is 19 digits.
   // The longest positive 64-bit number is 20 digits.
@@ -10730,7 +10730,7 @@ simdjson_unused simdjson_really_inline simdjson_result<double> parse_double(cons
     exponent += exp_neg ? 0-exp : exp;
   }
 
-  if (jsoncharutils::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (jsoncharutility_core::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   overflow = overflow || exponent < simdjson::internal::smallest_power || exponent > simdjson::internal::largest_power;
 
@@ -13641,7 +13641,7 @@ template<int N>
 simdjson_warn_unused simdjson_really_inline bool json_iterator::copy_to_buffer(const uint8_t *json, uint32_t max_len, uint8_t (&tmpbuf)[N]) noexcept {
   // Truncate whitespace to fit the buffer.
   if (max_len > N-1) {
-    if (jsoncharutils::is_not_structural_or_whitespace(json[N-1])) { return false; }
+    if (jsoncharutility_core::is_not_structural_or_whitespace(json[N-1])) { return false; }
     max_len = N-1;
   }
 
@@ -13982,12 +13982,12 @@ simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator
 simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator::parse_bool(const uint8_t *json) const noexcept {
   auto not_true = atomparsing::str4ncmp(json, "true");
   auto not_false = atomparsing::str4ncmp(json, "fals") | (json[4] ^ 'e');
-  bool error = (not_true && not_false) || jsoncharutils::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
+  bool error = (not_true && not_false) || jsoncharutility_core::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
   if (error) { return incorrect_type_error("Not a boolean"); }
   return simdjson_result<bool>(!not_true);
 }
 simdjson_really_inline bool value_iterator::parse_null(const uint8_t *json) const noexcept {
-  return !atomparsing::str4ncmp(json, "null") && jsoncharutils::is_structural_or_whitespace(json[4]);
+  return !atomparsing::str4ncmp(json, "null") && jsoncharutility_core::is_structural_or_whitespace(json[4]);
 }
 
 simdjson_warn_unused simdjson_really_inline simdjson_result<std::string_view> value_iterator::get_string() noexcept {
@@ -14055,7 +14055,7 @@ simdjson_really_inline bool value_iterator::is_root_null() noexcept {
   auto max_len = peek_scalar_length();
   auto json = advance_root_scalar("null");
   return max_len >= 4 && !atomparsing::str4ncmp(json, "null") &&
-         (max_len == 4 || jsoncharutils::is_structural_or_whitespace(json[5]));
+         (max_len == 4 || jsoncharutility_core::is_structural_or_whitespace(json[5]));
 }
 
 simdjson_warn_unused simdjson_really_inline error_code value_iterator::skip_child() noexcept {
@@ -16078,12 +16078,12 @@ namespace simd {
 
 #endif // SIMDJSON_HASWELL_SIMD_H
 /* end file include/simdjson/haswell/simd.h */
-/* begin file include/simdjson/generic/jsoncharutils.h */
+/* begin file include/simdjson/generic/jsoncharutility_core.h */
 
 namespace simdjson {
 namespace haswell {
 namespace {
-namespace jsoncharutils {
+namespace jsoncharutility_core {
 
 // return non-zero if not a structural or whitespace char
 // zero otherwise
@@ -16189,11 +16189,11 @@ simdjson_really_inline value128 full_multiplication(uint64_t value1, uint64_t va
   return answer;
 }
 
-} // namespace jsoncharutils
+} // namespace jsoncharutility_core
 } // unnamed namespace
 } // namespace haswell
 } // namespace simdjson
-/* end file include/simdjson/generic/jsoncharutils.h */
+/* end file include/simdjson/generic/jsoncharutility_core.h */
 /* begin file include/simdjson/generic/atomparsing.h */
 namespace simdjson {
 namespace haswell {
@@ -16222,7 +16222,7 @@ simdjson_really_inline uint32_t str4ncmp(const uint8_t *src, const char* atom) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_true_atom(const uint8_t *src) {
-  return (str4ncmp(src, "true") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "true") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -16234,7 +16234,7 @@ simdjson_really_inline bool is_valid_true_atom(const uint8_t *src, size_t len) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_false_atom(const uint8_t *src) {
-  return (str4ncmp(src+1, "alse") | jsoncharutils::is_not_structural_or_whitespace(src[5])) == 0;
+  return (str4ncmp(src+1, "alse") | jsoncharutility_core::is_not_structural_or_whitespace(src[5])) == 0;
 }
 
 simdjson_warn_unused
@@ -16246,7 +16246,7 @@ simdjson_really_inline bool is_valid_false_atom(const uint8_t *src, size_t len) 
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_null_atom(const uint8_t *src) {
-  return (str4ncmp(src, "null") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "null") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -16349,10 +16349,10 @@ static const uint8_t escape_map[256] = {
 simdjson_warn_unused
 simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
                                             uint8_t **dst_ptr) {
-  // jsoncharutils::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
+  // jsoncharutility_core::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
   // conversion isn't valid; we defer the check for this to inside the
   // multilingual plane check
-  uint32_t code_point = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+  uint32_t code_point = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
   *src_ptr += 6;
   // check for low surrogate for characters outside the Basic
   // Multilingual Plane.
@@ -16360,7 +16360,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
     if (((*src_ptr)[0] != '\\') || (*src_ptr)[1] != 'u') {
       return false;
     }
-    uint32_t code_point_2 = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+    uint32_t code_point_2 = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
 
     // if the first code point is invalid we will get here, as we will go past
     // the check for being outside the Basic Multilingual plane. If we don't
@@ -16375,7 +16375,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
         (((code_point - 0xd800) << 10) | (code_point_2 - 0xdc00)) + 0x10000;
     *src_ptr += 6;
   }
-  size_t offset = jsoncharutils::codepoint_to_utf8(code_point, *dst_ptr);
+  size_t offset = jsoncharutility_core::codepoint_to_utf8(code_point, *dst_ptr);
   *dst_ptr += offset;
   return offset > 0;
 }
@@ -16638,7 +16638,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
   // with a returned value of type value128 with a "low component" corresponding to the
   // 64-bit least significant bits of the product and with a "high component" corresponding
   // to the 64-bit most significant bits of the product.
-  simdjson::internal::value128 firstproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
+  simdjson::internal::value128 firstproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
   // Both i and power_of_five_128[index] have their most significant bit set to 1 which
   // implies that the either the most or the second most significant bit of the product
   // is 1. We pack values in this manner for efficiency reasons: it maximizes the use
@@ -16672,7 +16672,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
     // with a returned value of type value128 with a "low component" corresponding to the
     // 64-bit least significant bits of the product and with a "high component" corresponding
     // to the 64-bit most significant bits of the product.
-    simdjson::internal::value128 secondproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
+    simdjson::internal::value128 secondproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
     firstproduct.low += secondproduct.high;
     if(secondproduct.high > firstproduct.low) { firstproduct.high++; }
     // At this point, we might need to add at most one to firstproduct, but this
@@ -17030,7 +17030,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
     SIMDJSON_TRY( parse_exponent(src, p, exponent) );
   }
   if (is_float) {
-    const bool clean_end = jsoncharutils::is_structural_or_whitespace(*p);
+    const bool clean_end = jsoncharutility_core::is_structural_or_whitespace(*p);
     SIMDJSON_TRY( write_float(src, negative, i, start_digits, digit_count, exponent, writer) );
     if (!clean_end) { return INVALID_NUMBER(src); }
     return SUCCESS;
@@ -17046,7 +17046,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
       // Anything negative above INT64_MAX+1 is invalid
       if (i > uint64_t(INT64_MAX)+1) { return INVALID_NUMBER(src);  }
       WRITE_INTEGER(~i+1, src, writer);
-      if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+      if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
       return SUCCESS;
     // Positive overflow check:
     // - A 20 digit number starting with 2-9 is overflow, because 18,446,744,073,709,551,615 is the
@@ -17069,7 +17069,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
   } else {
     WRITE_INTEGER(negative ? (~i+1) : i, src, writer);
   }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
   return SUCCESS;
 }
 
@@ -17090,7 +17090,7 @@ simdjson_unused simdjson_really_inline simdjson_result<uint64_t> parse_unsigned(
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest positive 64-bit number is 20 digits.
   // We do it this way so we don't trigger this branch unless we must.
@@ -17133,7 +17133,7 @@ simdjson_unused simdjson_really_inline simdjson_result<int64_t> parse_integer(co
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest negative 64-bit number is 19 digits.
   // The longest positive 64-bit number is 20 digits.
@@ -17224,7 +17224,7 @@ simdjson_unused simdjson_really_inline simdjson_result<double> parse_double(cons
     exponent += exp_neg ? 0-exp : exp;
   }
 
-  if (jsoncharutils::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (jsoncharutility_core::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   overflow = overflow || exponent < simdjson::internal::smallest_power || exponent > simdjson::internal::largest_power;
 
@@ -20135,7 +20135,7 @@ template<int N>
 simdjson_warn_unused simdjson_really_inline bool json_iterator::copy_to_buffer(const uint8_t *json, uint32_t max_len, uint8_t (&tmpbuf)[N]) noexcept {
   // Truncate whitespace to fit the buffer.
   if (max_len > N-1) {
-    if (jsoncharutils::is_not_structural_or_whitespace(json[N-1])) { return false; }
+    if (jsoncharutility_core::is_not_structural_or_whitespace(json[N-1])) { return false; }
     max_len = N-1;
   }
 
@@ -20476,12 +20476,12 @@ simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator
 simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator::parse_bool(const uint8_t *json) const noexcept {
   auto not_true = atomparsing::str4ncmp(json, "true");
   auto not_false = atomparsing::str4ncmp(json, "fals") | (json[4] ^ 'e');
-  bool error = (not_true && not_false) || jsoncharutils::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
+  bool error = (not_true && not_false) || jsoncharutility_core::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
   if (error) { return incorrect_type_error("Not a boolean"); }
   return simdjson_result<bool>(!not_true);
 }
 simdjson_really_inline bool value_iterator::parse_null(const uint8_t *json) const noexcept {
-  return !atomparsing::str4ncmp(json, "null") && jsoncharutils::is_structural_or_whitespace(json[4]);
+  return !atomparsing::str4ncmp(json, "null") && jsoncharutility_core::is_structural_or_whitespace(json[4]);
 }
 
 simdjson_warn_unused simdjson_really_inline simdjson_result<std::string_view> value_iterator::get_string() noexcept {
@@ -20549,7 +20549,7 @@ simdjson_really_inline bool value_iterator::is_root_null() noexcept {
   auto max_len = peek_scalar_length();
   auto json = advance_root_scalar("null");
   return max_len >= 4 && !atomparsing::str4ncmp(json, "null") &&
-         (max_len == 4 || jsoncharutils::is_structural_or_whitespace(json[5]));
+         (max_len == 4 || jsoncharutility_core::is_structural_or_whitespace(json[5]));
 }
 
 simdjson_warn_unused simdjson_really_inline error_code value_iterator::skip_child() noexcept {
@@ -22522,12 +22522,12 @@ namespace simd {
 
 #endif // SIMDJSON_WESTMERE_SIMD_INPUT_H
 /* end file include/simdjson/westmere/simd.h */
-/* begin file include/simdjson/generic/jsoncharutils.h */
+/* begin file include/simdjson/generic/jsoncharutility_core.h */
 
 namespace simdjson {
 namespace westmere {
 namespace {
-namespace jsoncharutils {
+namespace jsoncharutility_core {
 
 // return non-zero if not a structural or whitespace char
 // zero otherwise
@@ -22633,11 +22633,11 @@ simdjson_really_inline value128 full_multiplication(uint64_t value1, uint64_t va
   return answer;
 }
 
-} // namespace jsoncharutils
+} // namespace jsoncharutility_core
 } // unnamed namespace
 } // namespace westmere
 } // namespace simdjson
-/* end file include/simdjson/generic/jsoncharutils.h */
+/* end file include/simdjson/generic/jsoncharutility_core.h */
 /* begin file include/simdjson/generic/atomparsing.h */
 namespace simdjson {
 namespace westmere {
@@ -22666,7 +22666,7 @@ simdjson_really_inline uint32_t str4ncmp(const uint8_t *src, const char* atom) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_true_atom(const uint8_t *src) {
-  return (str4ncmp(src, "true") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "true") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -22678,7 +22678,7 @@ simdjson_really_inline bool is_valid_true_atom(const uint8_t *src, size_t len) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_false_atom(const uint8_t *src) {
-  return (str4ncmp(src+1, "alse") | jsoncharutils::is_not_structural_or_whitespace(src[5])) == 0;
+  return (str4ncmp(src+1, "alse") | jsoncharutility_core::is_not_structural_or_whitespace(src[5])) == 0;
 }
 
 simdjson_warn_unused
@@ -22690,7 +22690,7 @@ simdjson_really_inline bool is_valid_false_atom(const uint8_t *src, size_t len) 
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_null_atom(const uint8_t *src) {
-  return (str4ncmp(src, "null") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "null") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -22794,10 +22794,10 @@ static const uint8_t escape_map[256] = {
 simdjson_warn_unused
 simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
                                             uint8_t **dst_ptr) {
-  // jsoncharutils::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
+  // jsoncharutility_core::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
   // conversion isn't valid; we defer the check for this to inside the
   // multilingual plane check
-  uint32_t code_point = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+  uint32_t code_point = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
   *src_ptr += 6;
   // check for low surrogate for characters outside the Basic
   // Multilingual Plane.
@@ -22805,7 +22805,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
     if (((*src_ptr)[0] != '\\') || (*src_ptr)[1] != 'u') {
       return false;
     }
-    uint32_t code_point_2 = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+    uint32_t code_point_2 = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
 
     // if the first code point is invalid we will get here, as we will go past
     // the check for being outside the Basic Multilingual plane. If we don't
@@ -22820,7 +22820,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
         (((code_point - 0xd800) << 10) | (code_point_2 - 0xdc00)) + 0x10000;
     *src_ptr += 6;
   }
-  size_t offset = jsoncharutils::codepoint_to_utf8(code_point, *dst_ptr);
+  size_t offset = jsoncharutility_core::codepoint_to_utf8(code_point, *dst_ptr);
   *dst_ptr += offset;
   return offset > 0;
 }
@@ -23083,7 +23083,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
   // with a returned value of type value128 with a "low component" corresponding to the
   // 64-bit least significant bits of the product and with a "high component" corresponding
   // to the 64-bit most significant bits of the product.
-  simdjson::internal::value128 firstproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
+  simdjson::internal::value128 firstproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
   // Both i and power_of_five_128[index] have their most significant bit set to 1 which
   // implies that the either the most or the second most significant bit of the product
   // is 1. We pack values in this manner for efficiency reasons: it maximizes the use
@@ -23117,7 +23117,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
     // with a returned value of type value128 with a "low component" corresponding to the
     // 64-bit least significant bits of the product and with a "high component" corresponding
     // to the 64-bit most significant bits of the product.
-    simdjson::internal::value128 secondproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
+    simdjson::internal::value128 secondproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
     firstproduct.low += secondproduct.high;
     if(secondproduct.high > firstproduct.low) { firstproduct.high++; }
     // At this point, we might need to add at most one to firstproduct, but this
@@ -23475,7 +23475,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
     SIMDJSON_TRY( parse_exponent(src, p, exponent) );
   }
   if (is_float) {
-    const bool clean_end = jsoncharutils::is_structural_or_whitespace(*p);
+    const bool clean_end = jsoncharutility_core::is_structural_or_whitespace(*p);
     SIMDJSON_TRY( write_float(src, negative, i, start_digits, digit_count, exponent, writer) );
     if (!clean_end) { return INVALID_NUMBER(src); }
     return SUCCESS;
@@ -23491,7 +23491,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
       // Anything negative above INT64_MAX+1 is invalid
       if (i > uint64_t(INT64_MAX)+1) { return INVALID_NUMBER(src);  }
       WRITE_INTEGER(~i+1, src, writer);
-      if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+      if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
       return SUCCESS;
     // Positive overflow check:
     // - A 20 digit number starting with 2-9 is overflow, because 18,446,744,073,709,551,615 is the
@@ -23514,7 +23514,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
   } else {
     WRITE_INTEGER(negative ? (~i+1) : i, src, writer);
   }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
   return SUCCESS;
 }
 
@@ -23535,7 +23535,7 @@ simdjson_unused simdjson_really_inline simdjson_result<uint64_t> parse_unsigned(
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest positive 64-bit number is 20 digits.
   // We do it this way so we don't trigger this branch unless we must.
@@ -23578,7 +23578,7 @@ simdjson_unused simdjson_really_inline simdjson_result<int64_t> parse_integer(co
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest negative 64-bit number is 19 digits.
   // The longest positive 64-bit number is 20 digits.
@@ -23669,7 +23669,7 @@ simdjson_unused simdjson_really_inline simdjson_result<double> parse_double(cons
     exponent += exp_neg ? 0-exp : exp;
   }
 
-  if (jsoncharutils::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (jsoncharutility_core::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   overflow = overflow || exponent < simdjson::internal::smallest_power || exponent > simdjson::internal::largest_power;
 
@@ -26580,7 +26580,7 @@ template<int N>
 simdjson_warn_unused simdjson_really_inline bool json_iterator::copy_to_buffer(const uint8_t *json, uint32_t max_len, uint8_t (&tmpbuf)[N]) noexcept {
   // Truncate whitespace to fit the buffer.
   if (max_len > N-1) {
-    if (jsoncharutils::is_not_structural_or_whitespace(json[N-1])) { return false; }
+    if (jsoncharutility_core::is_not_structural_or_whitespace(json[N-1])) { return false; }
     max_len = N-1;
   }
 
@@ -26921,12 +26921,12 @@ simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator
 simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator::parse_bool(const uint8_t *json) const noexcept {
   auto not_true = atomparsing::str4ncmp(json, "true");
   auto not_false = atomparsing::str4ncmp(json, "fals") | (json[4] ^ 'e');
-  bool error = (not_true && not_false) || jsoncharutils::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
+  bool error = (not_true && not_false) || jsoncharutility_core::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
   if (error) { return incorrect_type_error("Not a boolean"); }
   return simdjson_result<bool>(!not_true);
 }
 simdjson_really_inline bool value_iterator::parse_null(const uint8_t *json) const noexcept {
-  return !atomparsing::str4ncmp(json, "null") && jsoncharutils::is_structural_or_whitespace(json[4]);
+  return !atomparsing::str4ncmp(json, "null") && jsoncharutility_core::is_structural_or_whitespace(json[4]);
 }
 
 simdjson_warn_unused simdjson_really_inline simdjson_result<std::string_view> value_iterator::get_string() noexcept {
@@ -26994,7 +26994,7 @@ simdjson_really_inline bool value_iterator::is_root_null() noexcept {
   auto max_len = peek_scalar_length();
   auto json = advance_root_scalar("null");
   return max_len >= 4 && !atomparsing::str4ncmp(json, "null") &&
-         (max_len == 4 || jsoncharutils::is_structural_or_whitespace(json[5]));
+         (max_len == 4 || jsoncharutility_core::is_structural_or_whitespace(json[5]));
 }
 
 simdjson_warn_unused simdjson_really_inline error_code value_iterator::skip_child() noexcept {
@@ -29102,12 +29102,12 @@ template <typename T> struct simd8x64 {
 
 #endif // SIMDJSON_PPC64_SIMD_INPUT_H
 /* end file include/simdjson/ppc64/simd.h */
-/* begin file include/simdjson/generic/jsoncharutils.h */
+/* begin file include/simdjson/generic/jsoncharutility_core.h */
 
 namespace simdjson {
 namespace ppc64 {
 namespace {
-namespace jsoncharutils {
+namespace jsoncharutility_core {
 
 // return non-zero if not a structural or whitespace char
 // zero otherwise
@@ -29213,11 +29213,11 @@ simdjson_really_inline value128 full_multiplication(uint64_t value1, uint64_t va
   return answer;
 }
 
-} // namespace jsoncharutils
+} // namespace jsoncharutility_core
 } // unnamed namespace
 } // namespace ppc64
 } // namespace simdjson
-/* end file include/simdjson/generic/jsoncharutils.h */
+/* end file include/simdjson/generic/jsoncharutility_core.h */
 /* begin file include/simdjson/generic/atomparsing.h */
 namespace simdjson {
 namespace ppc64 {
@@ -29246,7 +29246,7 @@ simdjson_really_inline uint32_t str4ncmp(const uint8_t *src, const char* atom) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_true_atom(const uint8_t *src) {
-  return (str4ncmp(src, "true") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "true") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -29258,7 +29258,7 @@ simdjson_really_inline bool is_valid_true_atom(const uint8_t *src, size_t len) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_false_atom(const uint8_t *src) {
-  return (str4ncmp(src+1, "alse") | jsoncharutils::is_not_structural_or_whitespace(src[5])) == 0;
+  return (str4ncmp(src+1, "alse") | jsoncharutility_core::is_not_structural_or_whitespace(src[5])) == 0;
 }
 
 simdjson_warn_unused
@@ -29270,7 +29270,7 @@ simdjson_really_inline bool is_valid_false_atom(const uint8_t *src, size_t len) 
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_null_atom(const uint8_t *src) {
-  return (str4ncmp(src, "null") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "null") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -29390,10 +29390,10 @@ static const uint8_t escape_map[256] = {
 simdjson_warn_unused
 simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
                                             uint8_t **dst_ptr) {
-  // jsoncharutils::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
+  // jsoncharutility_core::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
   // conversion isn't valid; we defer the check for this to inside the
   // multilingual plane check
-  uint32_t code_point = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+  uint32_t code_point = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
   *src_ptr += 6;
   // check for low surrogate for characters outside the Basic
   // Multilingual Plane.
@@ -29401,7 +29401,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
     if (((*src_ptr)[0] != '\\') || (*src_ptr)[1] != 'u') {
       return false;
     }
-    uint32_t code_point_2 = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+    uint32_t code_point_2 = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
 
     // if the first code point is invalid we will get here, as we will go past
     // the check for being outside the Basic Multilingual plane. If we don't
@@ -29416,7 +29416,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
         (((code_point - 0xd800) << 10) | (code_point_2 - 0xdc00)) + 0x10000;
     *src_ptr += 6;
   }
-  size_t offset = jsoncharutils::codepoint_to_utf8(code_point, *dst_ptr);
+  size_t offset = jsoncharutility_core::codepoint_to_utf8(code_point, *dst_ptr);
   *dst_ptr += offset;
   return offset > 0;
 }
@@ -29677,7 +29677,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
   // with a returned value of type value128 with a "low component" corresponding to the
   // 64-bit least significant bits of the product and with a "high component" corresponding
   // to the 64-bit most significant bits of the product.
-  simdjson::internal::value128 firstproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
+  simdjson::internal::value128 firstproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
   // Both i and power_of_five_128[index] have their most significant bit set to 1 which
   // implies that the either the most or the second most significant bit of the product
   // is 1. We pack values in this manner for efficiency reasons: it maximizes the use
@@ -29711,7 +29711,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
     // with a returned value of type value128 with a "low component" corresponding to the
     // 64-bit least significant bits of the product and with a "high component" corresponding
     // to the 64-bit most significant bits of the product.
-    simdjson::internal::value128 secondproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
+    simdjson::internal::value128 secondproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
     firstproduct.low += secondproduct.high;
     if(secondproduct.high > firstproduct.low) { firstproduct.high++; }
     // At this point, we might need to add at most one to firstproduct, but this
@@ -30069,7 +30069,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
     SIMDJSON_TRY( parse_exponent(src, p, exponent) );
   }
   if (is_float) {
-    const bool clean_end = jsoncharutils::is_structural_or_whitespace(*p);
+    const bool clean_end = jsoncharutility_core::is_structural_or_whitespace(*p);
     SIMDJSON_TRY( write_float(src, negative, i, start_digits, digit_count, exponent, writer) );
     if (!clean_end) { return INVALID_NUMBER(src); }
     return SUCCESS;
@@ -30085,7 +30085,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
       // Anything negative above INT64_MAX+1 is invalid
       if (i > uint64_t(INT64_MAX)+1) { return INVALID_NUMBER(src);  }
       WRITE_INTEGER(~i+1, src, writer);
-      if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+      if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
       return SUCCESS;
     // Positive overflow check:
     // - A 20 digit number starting with 2-9 is overflow, because 18,446,744,073,709,551,615 is the
@@ -30108,7 +30108,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
   } else {
     WRITE_INTEGER(negative ? (~i+1) : i, src, writer);
   }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
   return SUCCESS;
 }
 
@@ -30129,7 +30129,7 @@ simdjson_unused simdjson_really_inline simdjson_result<uint64_t> parse_unsigned(
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest positive 64-bit number is 20 digits.
   // We do it this way so we don't trigger this branch unless we must.
@@ -30172,7 +30172,7 @@ simdjson_unused simdjson_really_inline simdjson_result<int64_t> parse_integer(co
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest negative 64-bit number is 19 digits.
   // The longest positive 64-bit number is 20 digits.
@@ -30263,7 +30263,7 @@ simdjson_unused simdjson_really_inline simdjson_result<double> parse_double(cons
     exponent += exp_neg ? 0-exp : exp;
   }
 
-  if (jsoncharutils::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (jsoncharutility_core::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   overflow = overflow || exponent < simdjson::internal::smallest_power || exponent > simdjson::internal::largest_power;
 
@@ -33174,7 +33174,7 @@ template<int N>
 simdjson_warn_unused simdjson_really_inline bool json_iterator::copy_to_buffer(const uint8_t *json, uint32_t max_len, uint8_t (&tmpbuf)[N]) noexcept {
   // Truncate whitespace to fit the buffer.
   if (max_len > N-1) {
-    if (jsoncharutils::is_not_structural_or_whitespace(json[N-1])) { return false; }
+    if (jsoncharutility_core::is_not_structural_or_whitespace(json[N-1])) { return false; }
     max_len = N-1;
   }
 
@@ -33515,12 +33515,12 @@ simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator
 simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator::parse_bool(const uint8_t *json) const noexcept {
   auto not_true = atomparsing::str4ncmp(json, "true");
   auto not_false = atomparsing::str4ncmp(json, "fals") | (json[4] ^ 'e');
-  bool error = (not_true && not_false) || jsoncharutils::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
+  bool error = (not_true && not_false) || jsoncharutility_core::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
   if (error) { return incorrect_type_error("Not a boolean"); }
   return simdjson_result<bool>(!not_true);
 }
 simdjson_really_inline bool value_iterator::parse_null(const uint8_t *json) const noexcept {
-  return !atomparsing::str4ncmp(json, "null") && jsoncharutils::is_structural_or_whitespace(json[4]);
+  return !atomparsing::str4ncmp(json, "null") && jsoncharutility_core::is_structural_or_whitespace(json[4]);
 }
 
 simdjson_warn_unused simdjson_really_inline simdjson_result<std::string_view> value_iterator::get_string() noexcept {
@@ -33588,7 +33588,7 @@ simdjson_really_inline bool value_iterator::is_root_null() noexcept {
   auto max_len = peek_scalar_length();
   auto json = advance_root_scalar("null");
   return max_len >= 4 && !atomparsing::str4ncmp(json, "null") &&
-         (max_len == 4 || jsoncharutils::is_structural_or_whitespace(json[5]));
+         (max_len == 4 || jsoncharutility_core::is_structural_or_whitespace(json[5]));
 }
 
 simdjson_warn_unused simdjson_really_inline error_code value_iterator::skip_child() noexcept {
@@ -35132,12 +35132,12 @@ simdjson_really_inline int leading_zeroes(uint64_t input_num) {
 
 #endif // SIMDJSON_FALLBACK_BITMANIPULATION_H
 /* end file include/simdjson/fallback/bitmanipulation.h */
-/* begin file include/simdjson/generic/jsoncharutils.h */
+/* begin file include/simdjson/generic/jsoncharutility_core.h */
 
 namespace simdjson {
 namespace fallback {
 namespace {
-namespace jsoncharutils {
+namespace jsoncharutility_core {
 
 // return non-zero if not a structural or whitespace char
 // zero otherwise
@@ -35243,11 +35243,11 @@ simdjson_really_inline value128 full_multiplication(uint64_t value1, uint64_t va
   return answer;
 }
 
-} // namespace jsoncharutils
+} // namespace jsoncharutility_core
 } // unnamed namespace
 } // namespace fallback
 } // namespace simdjson
-/* end file include/simdjson/generic/jsoncharutils.h */
+/* end file include/simdjson/generic/jsoncharutility_core.h */
 /* begin file include/simdjson/generic/atomparsing.h */
 namespace simdjson {
 namespace fallback {
@@ -35276,7 +35276,7 @@ simdjson_really_inline uint32_t str4ncmp(const uint8_t *src, const char* atom) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_true_atom(const uint8_t *src) {
-  return (str4ncmp(src, "true") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "true") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -35288,7 +35288,7 @@ simdjson_really_inline bool is_valid_true_atom(const uint8_t *src, size_t len) {
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_false_atom(const uint8_t *src) {
-  return (str4ncmp(src+1, "alse") | jsoncharutils::is_not_structural_or_whitespace(src[5])) == 0;
+  return (str4ncmp(src+1, "alse") | jsoncharutility_core::is_not_structural_or_whitespace(src[5])) == 0;
 }
 
 simdjson_warn_unused
@@ -35300,7 +35300,7 @@ simdjson_really_inline bool is_valid_false_atom(const uint8_t *src, size_t len) 
 
 simdjson_warn_unused
 simdjson_really_inline bool is_valid_null_atom(const uint8_t *src) {
-  return (str4ncmp(src, "null") | jsoncharutils::is_not_structural_or_whitespace(src[4])) == 0;
+  return (str4ncmp(src, "null") | jsoncharutility_core::is_not_structural_or_whitespace(src[4])) == 0;
 }
 
 simdjson_warn_unused
@@ -35393,10 +35393,10 @@ static const uint8_t escape_map[256] = {
 simdjson_warn_unused
 simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
                                             uint8_t **dst_ptr) {
-  // jsoncharutils::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
+  // jsoncharutility_core::hex_to_u32_nocheck fills high 16 bits of the return value with 1s if the
   // conversion isn't valid; we defer the check for this to inside the
   // multilingual plane check
-  uint32_t code_point = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+  uint32_t code_point = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
   *src_ptr += 6;
   // check for low surrogate for characters outside the Basic
   // Multilingual Plane.
@@ -35404,7 +35404,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
     if (((*src_ptr)[0] != '\\') || (*src_ptr)[1] != 'u') {
       return false;
     }
-    uint32_t code_point_2 = jsoncharutils::hex_to_u32_nocheck(*src_ptr + 2);
+    uint32_t code_point_2 = jsoncharutility_core::hex_to_u32_nocheck(*src_ptr + 2);
 
     // if the first code point is invalid we will get here, as we will go past
     // the check for being outside the Basic Multilingual plane. If we don't
@@ -35419,7 +35419,7 @@ simdjson_really_inline bool handle_unicode_codepoint(const uint8_t **src_ptr,
         (((code_point - 0xd800) << 10) | (code_point_2 - 0xdc00)) + 0x10000;
     *src_ptr += 6;
   }
-  size_t offset = jsoncharutils::codepoint_to_utf8(code_point, *dst_ptr);
+  size_t offset = jsoncharutility_core::codepoint_to_utf8(code_point, *dst_ptr);
   *dst_ptr += offset;
   return offset > 0;
 }
@@ -35681,7 +35681,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
   // with a returned value of type value128 with a "low component" corresponding to the
   // 64-bit least significant bits of the product and with a "high component" corresponding
   // to the 64-bit most significant bits of the product.
-  simdjson::internal::value128 firstproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
+  simdjson::internal::value128 firstproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index]);
   // Both i and power_of_five_128[index] have their most significant bit set to 1 which
   // implies that the either the most or the second most significant bit of the product
   // is 1. We pack values in this manner for efficiency reasons: it maximizes the use
@@ -35715,7 +35715,7 @@ simdjson_really_inline bool compute_float_64(int64_t power, uint64_t i, bool neg
     // with a returned value of type value128 with a "low component" corresponding to the
     // 64-bit least significant bits of the product and with a "high component" corresponding
     // to the 64-bit most significant bits of the product.
-    simdjson::internal::value128 secondproduct = jsoncharutils::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
+    simdjson::internal::value128 secondproduct = jsoncharutility_core::full_multiplication(i, simdjson::internal::power_of_five_128[index + 1]);
     firstproduct.low += secondproduct.high;
     if(secondproduct.high > firstproduct.low) { firstproduct.high++; }
     // At this point, we might need to add at most one to firstproduct, but this
@@ -36073,7 +36073,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
     SIMDJSON_TRY( parse_exponent(src, p, exponent) );
   }
   if (is_float) {
-    const bool clean_end = jsoncharutils::is_structural_or_whitespace(*p);
+    const bool clean_end = jsoncharutility_core::is_structural_or_whitespace(*p);
     SIMDJSON_TRY( write_float(src, negative, i, start_digits, digit_count, exponent, writer) );
     if (!clean_end) { return INVALID_NUMBER(src); }
     return SUCCESS;
@@ -36089,7 +36089,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
       // Anything negative above INT64_MAX+1 is invalid
       if (i > uint64_t(INT64_MAX)+1) { return INVALID_NUMBER(src);  }
       WRITE_INTEGER(~i+1, src, writer);
-      if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+      if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
       return SUCCESS;
     // Positive overflow check:
     // - A 20 digit number starting with 2-9 is overflow, because 18,446,744,073,709,551,615 is the
@@ -36112,7 +36112,7 @@ simdjson_really_inline error_code parse_number(const uint8_t *const src, W &writ
   } else {
     WRITE_INTEGER(negative ? (~i+1) : i, src, writer);
   }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return INVALID_NUMBER(src); }
   return SUCCESS;
 }
 
@@ -36133,7 +36133,7 @@ simdjson_unused simdjson_really_inline simdjson_result<uint64_t> parse_unsigned(
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest positive 64-bit number is 20 digits.
   // We do it this way so we don't trigger this branch unless we must.
@@ -36176,7 +36176,7 @@ simdjson_unused simdjson_really_inline simdjson_result<int64_t> parse_integer(co
   // If there were no digits, or if the integer starts with 0 and has more than one digit, it's an error.
   int digit_count = int(p - start_digits);
   if (digit_count == 0 || ('0' == *start_digits && digit_count > 1)) { return NUMBER_ERROR; }
-  if (!jsoncharutils::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (!jsoncharutility_core::is_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   // The longest negative 64-bit number is 19 digits.
   // The longest positive 64-bit number is 20 digits.
@@ -36267,7 +36267,7 @@ simdjson_unused simdjson_really_inline simdjson_result<double> parse_double(cons
     exponent += exp_neg ? 0-exp : exp;
   }
 
-  if (jsoncharutils::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
+  if (jsoncharutility_core::is_not_structural_or_whitespace(*p)) { return NUMBER_ERROR; }
 
   overflow = overflow || exponent < simdjson::internal::smallest_power || exponent > simdjson::internal::largest_power;
 
@@ -39178,7 +39178,7 @@ template<int N>
 simdjson_warn_unused simdjson_really_inline bool json_iterator::copy_to_buffer(const uint8_t *json, uint32_t max_len, uint8_t (&tmpbuf)[N]) noexcept {
   // Truncate whitespace to fit the buffer.
   if (max_len > N-1) {
-    if (jsoncharutils::is_not_structural_or_whitespace(json[N-1])) { return false; }
+    if (jsoncharutility_core::is_not_structural_or_whitespace(json[N-1])) { return false; }
     max_len = N-1;
   }
 
@@ -39519,12 +39519,12 @@ simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator
 simdjson_warn_unused simdjson_really_inline simdjson_result<bool> value_iterator::parse_bool(const uint8_t *json) const noexcept {
   auto not_true = atomparsing::str4ncmp(json, "true");
   auto not_false = atomparsing::str4ncmp(json, "fals") | (json[4] ^ 'e');
-  bool error = (not_true && not_false) || jsoncharutils::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
+  bool error = (not_true && not_false) || jsoncharutility_core::is_not_structural_or_whitespace(json[not_true ? 5 : 4]);
   if (error) { return incorrect_type_error("Not a boolean"); }
   return simdjson_result<bool>(!not_true);
 }
 simdjson_really_inline bool value_iterator::parse_null(const uint8_t *json) const noexcept {
-  return !atomparsing::str4ncmp(json, "null") && jsoncharutils::is_structural_or_whitespace(json[4]);
+  return !atomparsing::str4ncmp(json, "null") && jsoncharutility_core::is_structural_or_whitespace(json[4]);
 }
 
 simdjson_warn_unused simdjson_really_inline simdjson_result<std::string_view> value_iterator::get_string() noexcept {
@@ -39592,7 +39592,7 @@ simdjson_really_inline bool value_iterator::is_root_null() noexcept {
   auto max_len = peek_scalar_length();
   auto json = advance_root_scalar("null");
   return max_len >= 4 && !atomparsing::str4ncmp(json, "null") &&
-         (max_len == 4 || jsoncharutils::is_structural_or_whitespace(json[5]));
+         (max_len == 4 || jsoncharutility_core::is_structural_or_whitespace(json[5]));
 }
 
 simdjson_warn_unused simdjson_really_inline error_code value_iterator::skip_child() noexcept {

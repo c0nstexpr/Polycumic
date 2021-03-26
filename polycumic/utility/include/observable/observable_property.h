@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "utils.h"
+#include "utility_core.h"
 
 #include "property/property.h"
 

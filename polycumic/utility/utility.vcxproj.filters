@@ -27,7 +27,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\utils.h">
+    <ClInclude Include="include\utility_core.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\reflection.h">

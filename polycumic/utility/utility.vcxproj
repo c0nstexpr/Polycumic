@@ -30,7 +30,7 @@
     <ClInclude Include="include\traits\object.h" />
     <ClInclude Include="include\traits\type_container.h" />
     <ClInclude Include="include\type_traits.h" />
-    <ClInclude Include="include\utils.h" />
+    <ClInclude Include="include\utility_core.h" />
     <ClInclude Include="include\validator\member_validator.h" />
     <ClInclude Include="include\validator\validator.h" />
   </ItemGroup>

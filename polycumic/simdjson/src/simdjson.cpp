@@ -1482,7 +1482,7 @@ namespace internal {
 } // namespace internal
 } // namespace simdjson
 /* end file src/internal/error_tables.cpp */
-/* begin file src/internal/jsoncharutils_tables.cpp */
+/* begin file src/internal/jsoncharutility_core_tables.cpp */
 
 namespace simdjson {
 namespace internal {
@@ -1674,7 +1674,7 @@ SIMDJSON_DLLIMPORTEXPORT const uint32_t digit_to_val32[886] = {
 
 } // namespace internal
 } // namespace simdjson
-/* end file src/internal/jsoncharutils_tables.cpp */
+/* end file src/internal/jsoncharutility_core_tables.cpp */
 /* begin file src/internal/numberparsing_tables.cpp */
 
 namespace simdjson {

@@ -10,5 +10,5 @@ using namespace polycumic::game_core::systems::note;
 BOOST_AUTO_TEST_CASE(locator_system_test)
 {
     locator_system system{};
-    BOOST_TEST_MESSAGE((system.timestamp()().count()));
+    BOOST_TEST_MESSAGE((system.get_timestamp().count()));
 }
