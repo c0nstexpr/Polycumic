@@ -59,7 +59,7 @@ namespace polycumic::game_core::systems::note
                 if(!judge_state.state && locator.surface == current_sur)
                 {
                     const auto diff = (locator.timestamp - timestamp).count() /
-                        (time_diff_render_guard_.count() / (speed_ * locator.speed));
+                        (reaction_time_.count() / locator.speed);
                     
                     if(utility::is_between(diff, 0, 1))
                     {

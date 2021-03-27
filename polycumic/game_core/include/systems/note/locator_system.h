@@ -31,6 +31,14 @@ namespace polycumic::game_core::systems::note
             timestamp_ = timestamp;
         }
 
+        constexpr timestamp_t get_reaction_time() const { return reaction_time_; }
+
+        void set_reaction_time(const timestamp_t reaction_time)
+        {
+            move(timestamp_, current_render_surface_);
+            reaction_time_ = reaction_time;
+        }
+
         constexpr surface_t get_current_surface() const { return current_render_surface_; }
 
         void rotate(direction_t);
@@ -83,11 +91,9 @@ namespace polycumic::game_core::systems::note
 
         glm::dquat current_qua_;
 
-        utility::traits::member_t<&component_t::speed> speed_{};
-
         timestamp_t timestamp_;
 
-        static constexpr auto time_diff_render_guard_ = 3s;
+        timestamp_t reaction_time_ = 3s;
 
         std::unordered_set<entt::entity> transforms_changed_;
     };
