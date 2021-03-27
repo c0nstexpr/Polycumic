@@ -7,7 +7,11 @@
 #include <Engine/Engine.h>
 #include <Modules/ModuleManager.h>
 
+#include <third_include_start.h>
+
 #include <components/transform.h>
+
+#include <third_include_end.h>
 
 #define UE_PURE_VIRTUAL(name) PURE_VIRTUAL(name, throw std::runtime_error("not implemented");)
 
@@ -35,4 +39,11 @@ inline auto to_FTransform(const transform_component_t component)
     };
 
     return FTransform(FMatrix(converter(t[0]), converter(t[1]), converter(t[2]), converter(t[3])));
+}
+
+inline void disable_actor(AActor* actor)
+{
+    actor->SetActorTickEnabled(false);
+    actor->SetActorHiddenInGame(true);
+    actor->SetActorEnableCollision(false);
 }

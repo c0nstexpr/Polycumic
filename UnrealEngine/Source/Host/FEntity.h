@@ -4,7 +4,7 @@
 
 #include <third_include_start.h>
 
-#include <utils.h>
+#include <utility_core.h>
 
 #include <third_include_end.h>
 
@@ -12,7 +12,7 @@
 
 #include "FEntity.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FEntity
 {
     GENERATED_BODY()
