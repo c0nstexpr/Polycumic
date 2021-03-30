@@ -45,6 +45,9 @@ namespace polycumic::game_core::systems::note
         );
         std::mutex mutex;
 
+        transforms_changed_ = {};
+        transforms_changed_.reserve(group.size());
+
         std::for_each(
             std::execution::par,
             group.begin(),
@@ -58,21 +61,22 @@ namespace polycumic::game_core::systems::note
 
                 if(!judge_state.state && locator.surface == current_sur)
                 {
-                    const auto diff = (locator.timestamp - timestamp).count() /
-                        (reaction_time_.count() / locator.speed);
-                    
-                    if(utility::is_between(diff, 0, 1))
+                    const auto diff = std::min(
+                        (timestamp - locator.timestamp).count() /
+                        (reaction_time_.count() / locator.speed) + 1,
+                        1.0
+                    );
+
+                    if(diff > 0)
                     {
-                        transform.value = translate(
-                            scale({}, mix({}, glm::one<glm::dvec3>(), diff)),
-                            mix(
-                                {},
-                                location[utility::to_underlying(
-                                    locator.horizontal_coordinate
-                                )]
-                                [utility::to_underlying(locator.vertical_coordinate)],
+                        transform.value = scale(
+                            translate(
+                                glm::one<glm::dmat4>(),
+                                location[utility::to_underlying(locator.horizontal_coordinate)]
+                                [utility::to_underlying(locator.vertical_coordinate)] *
                                 diff
-                            )
+                            ),
+                            mix({}, glm::one<glm::dvec3>(), diff)
                         );
 
                         {

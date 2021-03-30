@@ -76,7 +76,7 @@ namespace polycumic::game_core::systems::note
             for(auto i = 0; i < v.size(); ++i)
                 for(auto j = 0; j < v.size(); ++j)
                     v[i][j] = {
-                        square_length / 2,
+                        cube_length / 2,
                         (1 - i) * square_length,
                         (1 - j) * square_length
                     };

@@ -35,7 +35,11 @@ namespace polycumic::game_core::systems::note
         void judge_from_timestamp(std::chrono::milliseconds);
 
         template<typename Func>
-        void flush(Func func) { func(std::move(result_set_)); }
+        void flush(Func func)
+        {
+            func(std::move(result_set_));
+            result_set_ = {};
+        }
 
         static constexpr auto prefect_time = 50ms;
 

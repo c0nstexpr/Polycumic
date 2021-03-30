@@ -2,6 +2,9 @@
 
 #include "systems/note/note_system.h"
 
+#include "components/transform.h"
+#include "components/note/judge_state.h"
+
 namespace polycumic::game_core::systems::note
 {
     std::vector<entt::entity> note_system::create_from_json(
@@ -19,6 +22,8 @@ namespace polycumic::game_core::systems::note
                 const auto id = registry.create();
                 entities.emplace_back(id);
 
+                registry.emplace<components::transform>(id);
+                registry.emplace<components::note::judge_state>(id);
                 {
                     auto&& locator_obj = obj["locator"].value();
                     registry.emplace<components::note::locator>(

@@ -10,7 +10,7 @@ namespace polycumic::game_core::systems::note
         const direction_t direction
     )
     {
-        auto&& group = 
+        auto&& group =
             registry.group<component_t, direction_t>(entt::get<const components::note::locator>);
         entt::entity candidate_note_entity = entt::null;
 
@@ -55,14 +55,17 @@ namespace polycumic::game_core::systems::note
     {
         auto&& group = registry.group<component_t>(entt::get<const components::note::locator>);
         std::mutex mutex;
+
+        result_set_.reserve(result_set_.size() + group.size());
+
         std::for_each(
             std::execution::par,
             group.begin(),
             group.end(),
             [=, &result_set = result_set_, &group, &mutex](const auto note)
             {
-                auto&& [judge_state, locator] = group.get<component_t, const
-                    components::note::locator>(note);
+                auto&& [judge_state, locator] = group.get<
+                    component_t, const components::note::locator>(note);
 
                 auto& state = judge_state.state;
 

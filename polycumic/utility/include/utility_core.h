@@ -21,6 +21,7 @@
 #include <entt/entt.hpp>
 #include <fmt/ostream.h>
 #include <glm/ext.hpp>
+#include <gsl/gsl>
 #include <range/v3/all.hpp>
 #include <rxcpp/rx.hpp>
 #include <tl/expected.hpp>

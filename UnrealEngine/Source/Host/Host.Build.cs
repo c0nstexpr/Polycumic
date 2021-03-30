@@ -21,7 +21,7 @@ public class Host : ModuleRules
         ProjectDir = Path.Combine(ModuleDirectory, "..", "..");
 
         PublicDependencyModuleNames.AddRange(
-            new[] { "Core", "CoreUObject", "Engine", "InputCore" }
+            new[] { "Core", "CoreUObject", "Engine", "InputCore", "Debug" }
         );
         PCHUsage = PCHUsageMode.NoPCHs;
         PublicSystemIncludePaths.Add(ModuleDirectory);
